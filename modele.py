@@ -1,5 +1,11 @@
 import numpy as np
 
-column= 3
-row =  5
-print(np.zeros((4,4)))
+column,row = 16,16
+nbBombe= 40
+a=np.zeros((column*row),dtype=object)
+
+a[:nbBombe]="b"
+np.random.shuffle(a)
+a= np.reshape(a,(column,row))
+print(a)
+
