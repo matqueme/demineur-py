@@ -87,22 +87,31 @@ class Generation:
         def get_adjacent_numbers(grid, i, j):
             total = []
             if j > 0:
-                total.append(grid[i, (j-1)])
+                if (grid[i, (j-1)] == '0'):
+                    total.append([i, (j-1)])
             if i > 0:
-                total.append(grid[(i-1), j])
+                if (grid[(i-1), j] == '0'):
+                    total.append([(i-1), j])
             if i < 15:
-                total.append(grid[(i+1), j])
+                if (grid[(i+1), j] == '0'):
+                    total.append([(i+1), j])
             if j < 15:
-                total.append(grid[i, (j+1)])
+                if (grid[i, (j+1)] == '0'):
+                    total.append([i, (j+1)])
             if i > 0 and j > 0:
-                total.append(grid[(i-1), (j-1)])
+                if (grid[(i-1), (j-1)] == '0'):
+                    total.append([(i-1), (j-1)])
             if i < 15 and j < 15:
-                total.append(grid[(i+1), (j+1)])
+                if (grid[(i+1), (j+1)] == '0'):
+                    total.append([(i+1), (j+1)])
             if i > 0 and j < 15:
-                total.append(grid[(i-1), (j+1)])
+                if (grid[(i-1), (j+1)] == '0'):
+                    total.append([(i-1), (j+1)])
             if i < 15 and j > 0:
-                total.append(grid[(i+1), (j-1)])
-            return np.sum(list(map(int, total)))
+                if (grid[(i+1), (j-1)] == '0'):
+                    total.append([(i+1), (j-1)])
+            print(total)
+            return total
 
         if (self.array[x, y] == 'b'):
             print("perdu")
