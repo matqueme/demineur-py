@@ -10,7 +10,7 @@ class Generation:
         self.nbBomb = nbBomb
         self.xClick, self.yClick = xClick, yClick
         self.array = np.zeros(shape=(self.column, self.row), dtype=object)
-        self.arrayHide = np.zeros(shape=(self.column, self.row))
+        self.arrayHide = np.full((self.column, self.row), '*', dtype=object)
 
         # genere un tableau avec toutes les valeurs ou l'on ne peut pas mettre de bombes, cad 3x3 autour de la génération
 
@@ -88,41 +88,76 @@ class Generation:
         def get_adjacent_numbers(grid, i, j):
             total = []
             if j > 0:
-                if (grid[i][(j-1)] == '0'):
-                    total.append([(j-1), i])
+                if (grid[j-1][i] == '0'):
+                    total.append([i, (j-1)])
             if i > 0:
-                if (grid[(i-1)][j] == '0'):
-                    total.append([j, (i-1)])
+                if (grid[j][i-1] == '0'):
+                    total.append([i-1, j])
             if i < 15:
-                if (grid[(i+1)][j] == '0'):
-                    total.append([j, (i+1)])
+                if (grid[j][i+1] == '0'):
+                    total.append([(i+1), j])
             if j < 15:
-                if (grid[i][(j+1)] == '0'):
-                    total.append([(j+1), i])
+                if (grid[j+1][i] == '0'):
+                    total.append([i, j+1])
             if i > 0 and j > 0:
-                if (grid[(i-1)][(j-1)] == '0'):
-                    total.append([(j-1), (i-1)])
+                if (grid[(j-1)][(i-1)] == '0'):
+                    total.append([(i-1), (j-1)])
             if i < 15 and j < 15:
-                if (grid[(i+1)][(j+1)] == '0'):
-                    total.append([(j+1), (i+1)])
+                if (grid[(j+1)][(i+1)] == '0'):
+                    total.append([(i+1), (j+1)])
             if i > 0 and j < 15:
-                if (grid[(i-1)][(j+1)] == '0'):
-                    total.append([(j+1), (i-1)])
+                if (grid[(j+1)][(i-1)] == '0'):
+                    total.append([(i-1), (j+1)])
             if i < 15 and j > 0:
-                if (grid[(i+1)][(j-1)] == '0'):
-                    total.append([(j-1), (i+1)])
-            print(total)
+                if (grid[(j-1)][(i+1)] == '0'):
+                    total.append([(i+1), (j-1)])
             return total
 
-        if (self.array[x, y] == 'b'):
+        def add_number(i, j):
+            if j > 0:
+                self.arrayHide[j-1][i] = (self.array[j-1][i])
+            if i > 0:
+                self.arrayHide[j][i-1] = (self.array[j][i-1])
+            if i < 15:
+                self.arrayHide[j][i+1] = (self.array[j][i+1])
+            if j < 15:
+                self.arrayHide[j+1][i] = (self.array[j+1][i])
+            if i > 0 and j > 0:
+                self.arrayHide[(j-1)][(i-1)] = (self.array[(j-1)][(i-1)])
+            if i < 15 and j < 15:
+                self.arrayHide[(j+1)][(i+1)] = (self.array[(j+1)][(i+1)])
+            if i > 0 and j < 15:
+                self.arrayHide[(j+1)][(i-1)] = (self.array[(j+1)][(i-1)])
+            if i < 15 and j > 0:
+                self.arrayHide[(j-1)][(i+1)] = (self.array[(j-1)][(i+1)])
+
+        if (self.array[y][x] == 'b'):
             print("perdu")
-        print(get_adjacent_numbers(self.array, x, y))
+        elif (self.array[y][x] == '0'):
+            getZeroTab = [[x, y]]
+            index = 0
+            while (len(getZeroTab) > index):
+                tabtemp = get_adjacent_numbers(
+                    self.array, getZeroTab[index][0], getZeroTab[index][1])
+                for i in range(len(tabtemp)):
+                    if tabtemp[i] not in getZeroTab:
+                        getZeroTab.append(
+                            tabtemp[i])
+                index += 1
+
+            for i in range(len(getZeroTab)):
+                add_number(getZeroTab[i][0], getZeroTab[i][1])
+
+            print(self.arrayHide)
+            print("final", getZeroTab, len(getZeroTab))
+        else:
+            self.arrayHide[y][x] = self.array[y][x]
+            print(self.arrayHide)
 
 
-Demineur = Generation(16, 16, 40, 2, 2)
-
+Demineur = Generation(16, 16, 40, 0, 0)
+Demineur.deleteCase(5, 10)
 '''question : 
 - Le test autour de chaque nombre avec tout les if c'est bien ?
 - Faire un tableau avec la boucle pour les valeurs interditent c'est bien ou autant mettre en statique ?
-- generation de la class c'est bien ? (surtout pour le tableau)
 - On fait la génération dans le __init__ ? '''
