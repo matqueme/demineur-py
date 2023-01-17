@@ -3,15 +3,17 @@ import random
 
 
 class Generation:
-    def __init__(self, column, row, bomb, array, xClick, yClick):
+    def __init__(self, column, row, nbBomb, xClick, yClick):
 
-        self.array = array
+        self.array = []
         self.column, self.row = column, row
-        self.bomb = bomb
-
+        self.nbBomb = nbBomb
+        self.xClick, self.yClick = xClick, yClick
         self.array = np.zeros(shape=(self.column, self.row), dtype=object)
+        self.arrayHide = np.zeros(shape=(self.column, self.row))
 
         # genere un tableau avec toutes les valeurs ou l'on ne peut pas mettre de bombes, cad 3x3 autour de la génération
+
         def impossible_array(i, j):
             total = [[i, j]]
             if j > 0:
@@ -57,7 +59,7 @@ class Generation:
 
         # genere des bombes dès que l'on est pas sur une case impossible ou que le il n'y a pas de bombe
         tempNbBomb = 0
-        while tempNbBomb != self.bomb:
+        while tempNbBomb != self.nbBomb:
             erreur = 0
             x = random.randint(0, row-1)
             y = random.randint(0, column-1)
@@ -79,6 +81,38 @@ class Generation:
         #a = (self.array == 'b').sum()
 
         print(self.array)
+        self.deleteCase(self.xClick, self.yClick)
+
+    def deleteCase(self, x, y):
+        def get_adjacent_numbers(grid, i, j):
+            total = []
+            if j > 0:
+                total.append(grid[i, (j-1)])
+            if i > 0:
+                total.append(grid[(i-1), j])
+            if i < 15:
+                total.append(grid[(i+1), j])
+            if j < 15:
+                total.append(grid[i, (j+1)])
+            if i > 0 and j > 0:
+                total.append(grid[(i-1), (j-1)])
+            if i < 15 and j < 15:
+                total.append(grid[(i+1), (j+1)])
+            if i > 0 and j < 15:
+                total.append(grid[(i-1), (j+1)])
+            if i < 15 and j > 0:
+                total.append(grid[(i+1), (j-1)])
+            return np.sum(list(map(int, total)))
+
+        if (self.array[x, y] == 'b'):
+            print("perdu")
+        print(get_adjacent_numbers(self.array, x, y))
 
 
-Demineur = Generation(16, 16, 40, [], 0, 0)
+Demineur = Generation(16, 16, 40, 2, 2)
+
+'''question : 
+- Le test autour de chaque nombre avec tout les if c'est bien ?
+- Faire un tableau avec la boucle pour les valeurs interditent c'est bien ou autant mettre en statique ?
+- generation de la class c'est bien ? (surtout pour le tableau)
+- On fait la génération dans le __init__ ? '''
