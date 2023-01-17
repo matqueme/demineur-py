@@ -38,21 +38,21 @@ class Generation:
         def get_adjacent_numbers(grid, i, j):
             total = []
             if j > 0:
-                total.append(grid[i, (j-1)])
+                total.append(grid[i][(j-1)])
             if i > 0:
-                total.append(grid[(i-1), j])
+                total.append(grid[(i-1)][j])
             if i < 15:
-                total.append(grid[(i+1), j])
+                total.append(grid[(i+1)][j])
             if j < 15:
-                total.append(grid[i, (j+1)])
+                total.append(grid[i][(j+1)])
             if i > 0 and j > 0:
-                total.append(grid[(i-1), (j-1)])
+                total.append(grid[(i-1)][(j-1)])
             if i < 15 and j < 15:
-                total.append(grid[(i+1), (j+1)])
+                total.append(grid[(i+1)][(j+1)])
             if i > 0 and j < 15:
-                total.append(grid[(i-1), (j+1)])
+                total.append(grid[(i-1)][(j+1)])
             if i < 15 and j > 0:
-                total.append(grid[(i+1), (j-1)])
+                total.append(grid[(i+1)][(j-1)])
             return str(total.count('b'))
 
         arrayImposible = impossible_array(xClick, yClick)
@@ -75,8 +75,8 @@ class Generation:
         # genere les chiffres autour des bombes
         for x in range(len(self.array)):
             for y in range(len(self.array[0])):
-                if (self.array[x, y] != 'b'):
-                    self.array[x, y] = get_adjacent_numbers(self.array, x, y)
+                if (self.array[x][y] != 'b'):
+                    self.array[x][y] = get_adjacent_numbers(self.array, x, y)
 
         #a = (self.array == 'b').sum()
 
@@ -84,32 +84,33 @@ class Generation:
         self.deleteCase(self.xClick, self.yClick)
 
     def deleteCase(self, x, y):
+
         def get_adjacent_numbers(grid, i, j):
             total = []
             if j > 0:
-                if (grid[i, (j-1)] == '0'):
-                    total.append([i, (j-1)])
+                if (grid[i][(j-1)] == '0'):
+                    total.append([(j-1), i])
             if i > 0:
-                if (grid[(i-1), j] == '0'):
-                    total.append([(i-1), j])
+                if (grid[(i-1)][j] == '0'):
+                    total.append([j, (i-1)])
             if i < 15:
-                if (grid[(i+1), j] == '0'):
-                    total.append([(i+1), j])
+                if (grid[(i+1)][j] == '0'):
+                    total.append([j, (i+1)])
             if j < 15:
-                if (grid[i, (j+1)] == '0'):
-                    total.append([i, (j+1)])
+                if (grid[i][(j+1)] == '0'):
+                    total.append([(j+1), i])
             if i > 0 and j > 0:
-                if (grid[(i-1), (j-1)] == '0'):
-                    total.append([(i-1), (j-1)])
+                if (grid[(i-1)][(j-1)] == '0'):
+                    total.append([(j-1), (i-1)])
             if i < 15 and j < 15:
-                if (grid[(i+1), (j+1)] == '0'):
-                    total.append([(i+1), (j+1)])
+                if (grid[(i+1)][(j+1)] == '0'):
+                    total.append([(j+1), (i+1)])
             if i > 0 and j < 15:
-                if (grid[(i-1), (j+1)] == '0'):
-                    total.append([(i-1), (j+1)])
+                if (grid[(i-1)][(j+1)] == '0'):
+                    total.append([(j+1), (i-1)])
             if i < 15 and j > 0:
-                if (grid[(i+1), (j-1)] == '0'):
-                    total.append([(i+1), (j-1)])
+                if (grid[(i+1)][(j-1)] == '0'):
+                    total.append([(j-1), (i+1)])
             print(total)
             return total
 
