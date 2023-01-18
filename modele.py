@@ -56,7 +56,7 @@ class Generation:
             return str(total.count('b'))
 
         arrayImposible = impossible_array(xClick, yClick)
-
+        print(arrayImposible)
         # genere des bombes dès que l'on est pas sur une case impossible ou que le il n'y a pas de bombe
         tempNbBomb = 0
         while tempNbBomb != self.nbBomb:
@@ -64,12 +64,13 @@ class Generation:
             x = random.randint(0, row-1)
             y = random.randint(0, column-1)
             for i in range(len(arrayImposible)):
+                print([y, x])
                 if arrayImposible[i] == [x, y]:
                     erreur = 1
             if self.array[x][y] == 'b':
                 erreur = 1
             if (erreur == 0):
-                self.array[x][y] = 'b'
+                self.array[y][x] = 'b'
                 tempNbBomb += 1
 
         # genere les chiffres autour des bombes
@@ -114,6 +115,7 @@ class Generation:
             return total
 
         def add_number(i, j):
+            self.arrayHide[j][i] = (self.array[j][i])
             if j > 0:
                 self.arrayHide[j-1][i] = (self.array[j-1][i])
             if i > 0:
@@ -155,7 +157,7 @@ class Generation:
             print(self.arrayHide)
 
 
-Demineur = Generation(16, 16, 40, 0, 0)
+Demineur = Generation(16, 16, 40, 0, 5)
 Demineur.deleteCase(5, 10)
 '''question : 
 - Le test autour de chaque nombre avec tout les if c'est bien ?
