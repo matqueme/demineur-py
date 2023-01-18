@@ -62,11 +62,12 @@ class Generation:
 
         if (self.array[y][x] == 'b'):
             print("perdu")
+            self.arrayHide[y][x] = 'B'
         elif (self.array[y][x] == '0'):
             getZeroTab = [[x, y]]
             index = 0
             while (len(getZeroTab) > index):
-                tabtemp = self.utils.get_adjacent_numbers(
+                tabtemp = self.utils.get_adjacent_numbers2(
                     self.array, getZeroTab[index][0], getZeroTab[index][1])
                 for i in range(len(tabtemp)):
                     if tabtemp[i] not in getZeroTab:
@@ -77,7 +78,7 @@ class Generation:
                 add_number(getZeroTab[i][0], getZeroTab[i][1])
         else:
             self.arrayHide[y][x] = self.array[y][x]
-            return self.arrayHide
+        return self.arrayHide
 
 
 '''question : 

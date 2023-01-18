@@ -42,7 +42,7 @@ class Utils:
             total.append(grid[(i+1)][(j-1)])
         return str(total.count('b'))
 
-    def get_adjacent_numbers(grid, i, j):
+    def get_adjacent_numbers2(self,grid, i, j):
         total = []
         if j > 0:
             if (grid[j-1][i] == '0'):
