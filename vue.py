@@ -47,6 +47,8 @@ class Vue():
                 sprite_sheet, PIXEL, PIXEL, 17, 50)
             bloc_flag = sprites_sheet.get_image(
                 sprite_sheet, PIXEL, PIXEL, 34, 50)
+            bloc_interrogation = sprites_sheet.get_image(
+                sprite_sheet, PIXEL, PIXEL, 51, 50)
             bloc_mine = sprites_sheet.get_image(
                 sprite_sheet, PIXEL, PIXEL, 85, 50)
             bloc_mine_explode = sprites_sheet.get_image(
@@ -141,14 +143,49 @@ class Vue():
                                     if arrayHide[y][i] == '8':
                                         window.blit(
                                             bloc_number_8, (i*17, y*17))
-
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT:
-                        # Set the x, y postions of the mouse click
-                        x, y = event.pos
-                        pos_x, pos_y = int(x / 17), int(y / 17)
-                        # il faut verifier avec le tableau qu'il s'agit d'une case plein
-                        window.blit(bloc_flag, (int(pos_x*17), int(pos_y*17)))
-
+                                    if arrayHide[y][i] == 'F':
+                                        window.blit(
+                                            bloc_flag, (int(i*17), int(y*17)))
+                    if PERDU == 0:
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT:
+                            # Set the x, y postions of the mouse click
+                            x, y = event.pos
+                            pos_x, pos_y = int(x / 17), int(y / 17)
+                            if not genere:
+                                arrayHide = demineur.setFlagorInt(pos_x, pos_y)
+                                for i in range(len(arrayHide)):
+                                    for y in range(len(arrayHide)):
+                                        if arrayHide[y][i] == 'F':
+                                            window.blit(
+                                                bloc_flag, (int(i*17), int(y*17)))
+                                        if arrayHide[y][i] == 'I':
+                                            window.blit(
+                                                bloc_interrogation, (int(i*17), int(y*17)))
+                                        if arrayHide[y][i] == '*':
+                                            window.blit(
+                                                bloc_full, (int(i*17), int(y*17)))
+                            # il faut verifier avec le tableau qu'il s'agit d'une case plein
+                            #window.blit(bloc_flag, (int(pos_x*17), int(pos_y*17)))
+                        if not genere:
+                            cur = pygame.mouse.get_pos()
+                            click = pygame.mouse.get_pressed()
+                            # demineur.timestmp()
+                            if click[0] == True:
+                                dem = demineur.getArrayHide()
+                                if dem[int(cur[1] / 17)][int(cur[0] / 17)] == '*':
+                                    for i in range(len(dem)):
+                                        for j in range(len(dem)):
+                                            if dem[j][i] == '*':
+                                                window.blit(
+                                                    bloc_full, (i*17, j*17))
+                                    window.blit(
+                                        bloc_empty, (int(cur[0] / 17)*17, int(cur[1] / 17)*17))
+                                else:
+                                    for i in range(len(dem)):
+                                        for j in range(len(dem)):
+                                            if dem[j][i] == '*':
+                                                window.blit(
+                                                    bloc_full, (i*17, j*17))
                 pygame.display.update()
             return
 
