@@ -105,11 +105,14 @@ class Generation:
     def getArrayHide(self):
         return self.arrayHide
 
+    def getNb_Bombe(self):
+        a = (self.arrayHide == 'F').sum()
+        return a
     # def timestmp(self):
         # time_stamp = time.time()
         # if math.floor(time_stamp - self.time) > self.lasttime:
-            # print(math.floor(time_stamp - self.time))
-            # self.lasttime = math.floor(time_stamp - self.time)
+        # print(math.floor(time_stamp - self.time))
+        # self.lasttime = math.floor(time_stamp - self.time)
 
 
 '''question :

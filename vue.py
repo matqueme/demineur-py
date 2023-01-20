@@ -31,6 +31,8 @@ class Vue():
         DIGIT_X = 14
         DIGIT_Y = 24
 
+        SMILEY = 25
+
         def grille():
             PERDU = 0
             self.arrayHide = []
@@ -77,6 +79,33 @@ class Vue():
                 sprite_sheet, DIGIT_X, DIGIT_Y, 0, 0)
             digit_2 = sprites_sheet.get_image(
                 sprite_sheet, DIGIT_X, DIGIT_Y, 14, 0)
+            digit_3 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 28, 0)
+            digit_4 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 42, 0)
+            digit_5 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 56, 0)
+            digit_6 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 70, 0)
+            digit_7 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 84, 0)
+            digit_8 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 98, 0)
+            digit_9 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 112, 0)
+            digit_0 = sprites_sheet.get_image(
+                sprite_sheet, DIGIT_X, DIGIT_Y, 126, 0)
+
+            smiley_happy = sprites_sheet.get_image(
+                sprite_sheet, SMILEY, SMILEY, 1, 25)
+            smiley_happy_click = sprites_sheet.get_image(
+                sprite_sheet, SMILEY, SMILEY, 28, 25)
+            smiley_shock = sprites_sheet.get_image(
+                sprite_sheet, SMILEY, SMILEY, 55, 25)
+            smiley_win = sprites_sheet.get_image(
+                sprite_sheet, SMILEY, SMILEY, 82, 25)
+            smiley_lose = sprites_sheet.get_image(
+                sprite_sheet, SMILEY, SMILEY, 109, 25)
 
             window.fill(background)
 
@@ -84,6 +113,16 @@ class Vue():
             for i in range(longeur):
                 for y in range(largeur):
                     window.blit(bloc_full, (17*i, 17*y+HAUTEUR))
+
+            window.blit(smiley_happy, ((SCREEN_WIDTH/2) -
+                        SMILEY/2, HAUTEUR/2 - SMILEY/2))
+
+            for i in range(3):
+                window.blit(digit_1, (SCREEN_WIDTH-i *
+                            DIGIT_X, HAUTEUR/2 - DIGIT_Y/2))
+            for i in range(3):
+                window.blit(
+                    digit_0, (i*DIGIT_X, HAUTEUR/2 - DIGIT_Y/2))
 
             while run:
 
@@ -173,6 +212,34 @@ class Vue():
                                                 bloc_full, (int(i*17), int(y*17)+HAUTEUR))
                             # il faut verifier avec le tableau qu'il s'agit d'une case plein
                             #window.blit(bloc_flag, (int(pos_x*17), int(pos_y*17)))
+                            nb_bombe = NB_MINES - demineur.getNb_Bombe()
+
+                            nb_bombes = list(str(nb_bombe))
+
+                            for i in range(len(nb_bombes)):
+                                if nb_bombes[i] == '1':
+                                    digit = digit_1
+                                elif nb_bombes[i] == '2':
+                                    digit = digit_2
+                                elif nb_bombes[i] == '3':
+                                    digit = digit_3
+                                elif nb_bombes[i] == '4':
+                                    digit = digit_4
+                                elif nb_bombes[i] == '5':
+                                    digit = digit_5
+                                elif nb_bombes[i] == '6':
+                                    digit = digit_6
+                                elif nb_bombes[i] == '7':
+                                    digit = digit_7
+                                elif nb_bombes[i] == '8':
+                                    digit = digit_8
+                                elif nb_bombes[i] == '9':
+                                    digit = digit_9
+                                elif nb_bombes[i] == '0':
+                                    digit = digit_0
+                                window.blit(
+                                    digit, (i*DIGIT_X, HAUTEUR/2 - DIGIT_Y/2))
+
                         if not genere:
                             cur = pygame.mouse.get_pos()
                             click = pygame.mouse.get_pressed()
@@ -194,6 +261,9 @@ class Vue():
                                             if dem[j][i] == '*':
                                                 window.blit(
                                                     bloc_full, (i*17, j*17+HAUTEUR))
+                    else:
+                        window.blit(smiley_lose, ((SCREEN_WIDTH/2) -
+                                                  SMILEY/2, HAUTEUR/2 - SMILEY/2))
                 pygame.display.update()
             return
 
