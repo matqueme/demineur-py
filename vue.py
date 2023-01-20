@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from sprites_sheet import sprites_sheet
 from modele import Generation
+import math
 
 
 class Vue():
@@ -13,10 +14,12 @@ class Vue():
 
         NB_MINES = 40
 
-        SCREEN_WIDTH = longeur*17
-        SCREEN_HEIGHT = largeur*17
+        HAUTEUR = 50
 
-        background = (255, 255, 255)
+        SCREEN_WIDTH = longeur*17
+        SCREEN_HEIGHT = largeur*17 + HAUTEUR
+
+        background = (192, 192, 192)
 
         filename = './sprites.png'
 
@@ -80,7 +83,7 @@ class Vue():
             # On affiche le tableau
             for i in range(longeur):
                 for y in range(largeur):
-                    window.blit(bloc_full, (17*i, 17*y))
+                    window.blit(bloc_full, (17*i, 17*y+HAUTEUR))
 
             while run:
 
@@ -94,98 +97,103 @@ class Vue():
                     if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
                         # Set the x, y postions of the mouse click
                         x, y = event.pos
-                        pos_x, pos_y = int(x / 17), int(y / 17)
-                        while genere:
-                            demineur = Generation(
-                                longeur, largeur, NB_MINES, pos_x, pos_y)
-                            genere = False
-                        if PERDU == 0:
-                            arrayHide = demineur.deleteCase(pos_x, pos_y)
-                        # print(arrayHide)
+                        y = y - HAUTEUR
+                        pos_x, pos_y = int(x / 17), int(((y) / 17))
+                        if y >= 0:
+                            while genere:
+                                demineur = Generation(
+                                    longeur, largeur, NB_MINES, pos_x, pos_y)
+                                genere = False
+                            if PERDU == 0:
+                                arrayHide = demineur.deleteCase(
+                                    pos_x, pos_y)
+                            # print(arrayHide)
 
-                        for i in range(len(arrayHide)):
-                            for y in range(len(arrayHide)):
-                                if arrayHide[y][i] != '*':
-                                    if arrayHide[y][i] == 'B':
-                                        for g in range(len(demineur.array)):
-                                            for w in range(len(demineur.array)):
-                                                if demineur.array[w][g] == 'b':
-                                                    window.blit(
-                                                        bloc_mine, (g*17, w*17))
-                                        window.blit(
-                                            bloc_mine_explode, (i*17, y*17))
-                                        PERDU = 1
+                            for i in range(len(arrayHide)):
+                                for y in range(len(arrayHide)):
+                                    if arrayHide[y][i] != '*':
+                                        if arrayHide[y][i] == 'B':
+                                            for g in range(len(demineur.array)):
+                                                for w in range(len(demineur.array)):
+                                                    if demineur.array[w][g] == 'b':
+                                                        window.blit(
+                                                            bloc_mine, (g*17, w*17+HAUTEUR))
+                                            window.blit(
+                                                bloc_mine_explode, (i*17, y*17+HAUTEUR))
+                                            PERDU = 1
 
-                                    if arrayHide[y][i] == '0':
-                                        window.blit(
-                                            bloc_empty, (i*17, y*17))
-                                    if arrayHide[y][i] == '1':
-                                        window.blit(
-                                            bloc_number_1, (i*17, y*17))
-                                    if arrayHide[y][i] == '2':
-                                        window.blit(
-                                            bloc_number_2, (i*17, y*17))
-                                    if arrayHide[y][i] == '3':
-                                        window.blit(
-                                            bloc_number_3, (i*17, y*17))
-                                    if arrayHide[y][i] == '4':
-                                        window.blit(
-                                            bloc_number_4, (i*17, y*17))
-                                    if arrayHide[y][i] == '5':
-                                        window.blit(
-                                            bloc_number_5, (i*17, y*17))
-                                    if arrayHide[y][i] == '6':
-                                        window.blit(
-                                            bloc_number_6, (i*17, y*17))
-                                    if arrayHide[y][i] == '7':
-                                        window.blit(
-                                            bloc_number_7, (i*17, y*17))
-                                    if arrayHide[y][i] == '8':
-                                        window.blit(
-                                            bloc_number_8, (i*17, y*17))
-                                    if arrayHide[y][i] == 'F':
-                                        window.blit(
-                                            bloc_flag, (int(i*17), int(y*17)))
+                                        if arrayHide[y][i] == '0':
+                                            window.blit(
+                                                bloc_empty, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '1':
+                                            window.blit(
+                                                bloc_number_1, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '2':
+                                            window.blit(
+                                                bloc_number_2, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '3':
+                                            window.blit(
+                                                bloc_number_3, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '4':
+                                            window.blit(
+                                                bloc_number_4, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '5':
+                                            window.blit(
+                                                bloc_number_5, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '6':
+                                            window.blit(
+                                                bloc_number_6, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '7':
+                                            window.blit(
+                                                bloc_number_7, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == '8':
+                                            window.blit(
+                                                bloc_number_8, (i*17, y*17+HAUTEUR))
+                                        if arrayHide[y][i] == 'F':
+                                            window.blit(
+                                                bloc_flag, (int(i*17), int(y*17+HAUTEUR)))
                     if PERDU == 0:
                         if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT:
                             # Set the x, y postions of the mouse click
                             x, y = event.pos
+                            y = y - HAUTEUR
                             pos_x, pos_y = int(x / 17), int(y / 17)
-                            if not genere:
+                            if not genere and y >= 0:
                                 arrayHide = demineur.setFlagorInt(pos_x, pos_y)
                                 for i in range(len(arrayHide)):
                                     for y in range(len(arrayHide)):
                                         if arrayHide[y][i] == 'F':
                                             window.blit(
-                                                bloc_flag, (int(i*17), int(y*17)))
+                                                bloc_flag, (int(i*17), int(y*17)+HAUTEUR))
                                         if arrayHide[y][i] == 'I':
                                             window.blit(
-                                                bloc_interrogation, (int(i*17), int(y*17)))
+                                                bloc_interrogation, (int(i*17), int(y*17)+HAUTEUR))
                                         if arrayHide[y][i] == '*':
                                             window.blit(
-                                                bloc_full, (int(i*17), int(y*17)))
+                                                bloc_full, (int(i*17), int(y*17)+HAUTEUR))
                             # il faut verifier avec le tableau qu'il s'agit d'une case plein
                             #window.blit(bloc_flag, (int(pos_x*17), int(pos_y*17)))
                         if not genere:
                             cur = pygame.mouse.get_pos()
                             click = pygame.mouse.get_pressed()
                             # demineur.timestmp()
-                            if click[0] == True:
+                            if click[0] == True and cur[1]-HAUTEUR >= 0:
+                                y = cur[1]-HAUTEUR
                                 dem = demineur.getArrayHide()
-                                if dem[int(cur[1] / 17)][int(cur[0] / 17)] == '*':
+                                if dem[int((y) / 17)][int((cur[0] / 17))] == '*':
                                     for i in range(len(dem)):
                                         for j in range(len(dem)):
                                             if dem[j][i] == '*':
                                                 window.blit(
-                                                    bloc_full, (i*17, j*17))
+                                                    bloc_full, (i*17, j*17+HAUTEUR))
                                     window.blit(
-                                        bloc_empty, (int(cur[0] / 17)*17, int(cur[1] / 17)*17))
+                                        bloc_empty, (int(cur[0] / 17)*17, math.floor(y/17)*17+HAUTEUR))
                                 else:
                                     for i in range(len(dem)):
                                         for j in range(len(dem)):
                                             if dem[j][i] == '*':
                                                 window.blit(
-                                                    bloc_full, (i*17, j*17))
+                                                    bloc_full, (i*17, j*17+HAUTEUR))
                 pygame.display.update()
             return
 
