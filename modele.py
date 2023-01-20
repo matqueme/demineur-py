@@ -40,7 +40,6 @@ class Generation:
                 if (self.array[x][y] != 'b'):
                     self.array[x][y] = self.utils.get_adjacent_numbers(
                         self.array, x, y)
-        print((self.array == 'b').sum())
         self.deleteCase(self.xClick, self.yClick)
 
     def deleteCase(self, x, y):

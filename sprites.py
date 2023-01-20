@@ -102,6 +102,28 @@ class Sprites():
             digit = self.digit_0
         return digit
 
+    def returnSprite(self, tab):
+        if tab == '0':
+            return "self.sprite.getbloc_empty()"
+        if tab == '1':
+            return "self.sprite.getbloc_number_1()"
+        if tab == '2':
+            return "self.sprite.getbloc_number_2()"
+        if tab == '3':
+            return "self.sprite.getbloc_number_3()"
+        if tab == '4':
+            return "self.sprite.getbloc_number_4()"
+        if tab == '5':
+            return "self.sprite.getbloc_number_5()"
+        if tab == '6':
+            return "self.sprite.getbloc_number_6()"
+        if tab == '7':
+            return "self.sprite.getbloc_number_7()"
+        if tab == '8':
+            return "self.sprite.getbloc_number_8()"
+        if tab == 'F':
+            return "self.sprite.getbloc_flag()"
+
     def getbloc_full(self): return self.bloc_full
     def getbloc_empty(self): return self.bloc_empty
     def getbloc_flag(self): return self.bloc_flag
