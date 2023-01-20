@@ -18,7 +18,7 @@ class Vue():
 
         background = (255, 255, 255)
 
-        filename = 'C:/Users/lemat/Documents/ISEN/M1/DP IA/py_avance/demineur-py/sprites.png'
+        filename = './sprites.png'
 
         LEFT = 1
         RIGHT = 3
@@ -109,7 +109,7 @@ class Vue():
                                             for w in range(len(demineur.array)):
                                                 if demineur.array[w][g] == 'b':
                                                     window.blit(
-                                                        bloc_mine, (w*17, g*17))
+                                                        bloc_mine, (g*17, w*17))
                                         window.blit(
                                             bloc_mine_explode, (i*17, y*17))
                                         PERDU = 1
