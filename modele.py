@@ -93,8 +93,8 @@ class Generation:
                 self.arrayHide[y][x] = self.array[y][x]
         return self.arrayHide
 
-    def setFlagorInt(self, x, y):
-        if self.arrayHide[y][x] == '*':
+    def setFlagorInt(self, x, y, nbBombe):
+        if self.arrayHide[y][x] == '*' and nbBombe-self.getNb_Bombe() > 0:
             self.arrayHide[y][x] = 'F'
         elif self.arrayHide[y][x] == 'F':
             self.arrayHide[y][x] = 'I'
