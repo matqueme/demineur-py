@@ -4,42 +4,42 @@ import pygame
 class Sprites():
     def __init__(self):
         self.filename = './sprites.png'
-        PIXEL = 17
+        PIXEL = 16
 
-        DIGIT_X = 14
-        DIGIT_Y = 24
+        DIGIT_X = 13
+        DIGIT_Y = 23
 
-        SMILEY = 25
+        SMILEY = 26
         sprite_sheet = pygame.image.load(self.filename).convert_alpha()
 
         self.bloc_full = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 0, 50)
+            sprite_sheet, PIXEL, PIXEL, 0, 51)
         self.bloc_empty = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 17, 50)
+            sprite_sheet, PIXEL, PIXEL, 17, 51)
         self.bloc_flag = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 34, 50)
+            sprite_sheet, PIXEL, PIXEL, 34, 51)
         self.bloc_interrogation = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 51, 50)
+            sprite_sheet, PIXEL, PIXEL, 51, 51)
         self.bloc_mine = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 85, 50)
+            sprite_sheet, PIXEL, PIXEL, 85, 51)
         self.bloc_mine_explode = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 102, 50)
+            sprite_sheet, PIXEL, PIXEL, 102, 51)
         self.bloc_number_1 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 0, 67)
+            sprite_sheet, PIXEL, PIXEL, 0, 68)
         self.bloc_number_2 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 17, 67)
+            sprite_sheet, PIXEL, PIXEL, 17, 68)
         self.bloc_number_3 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 34, 67)
+            sprite_sheet, PIXEL, PIXEL, 34, 68)
         self.bloc_number_4 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 51, 67)
+            sprite_sheet, PIXEL, PIXEL, 51, 68)
         self.bloc_number_5 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 68, 67)
+            sprite_sheet, PIXEL, PIXEL, 68, 68)
         self.bloc_number_6 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 85, 67)
+            sprite_sheet, PIXEL, PIXEL, 85, 68)
         self.bloc_number_7 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 102, 67)
+            sprite_sheet, PIXEL, PIXEL, 102, 68)
         self.bloc_number_8 = self.get_image(
-            sprite_sheet, PIXEL, PIXEL, 119, 67)
+            sprite_sheet, PIXEL, PIXEL, 119, 68)
 
         self.digit_1 = self.get_image(
             sprite_sheet, DIGIT_X, DIGIT_Y, 0, 0)
@@ -63,15 +63,15 @@ class Sprites():
             sprite_sheet, DIGIT_X, DIGIT_Y, 126, 0)
 
         self.smiley_happy = self.get_image(
-            sprite_sheet, SMILEY, SMILEY, 1, 25)
+            sprite_sheet, SMILEY, SMILEY, 0, 24)
         self.smiley_happy_click = self.get_image(
-            sprite_sheet, SMILEY, SMILEY, 28, 25)
+            sprite_sheet, SMILEY, SMILEY, 27, 24)
         self.smiley_shock = self.get_image(
-            sprite_sheet, SMILEY, SMILEY, 55, 25)
+            sprite_sheet, SMILEY, SMILEY, 54, 24)
         self.smiley_win = self.get_image(
-            sprite_sheet, SMILEY, SMILEY, 82, 25)
+            sprite_sheet, SMILEY, SMILEY, 81, 24)
         self.smiley_lose = self.get_image(
-            sprite_sheet, SMILEY, SMILEY, 109, 25)
+            sprite_sheet, SMILEY, SMILEY, 108, 24)
 
     def get_image(self, sheet, width, height, pos_x_image, pos_y_image):
         image = pygame.Surface((width, height)).convert_alpha()
