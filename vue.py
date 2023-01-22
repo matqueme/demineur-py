@@ -9,16 +9,16 @@ class Vue():
     def __init__(self):
 
         # Taille du tableau de jeu
-        longeur = 16
-        largeur = 16
+        LONGUEUR = 16
+        LARGEUR = 16
 
         NB_MINES = 40
 
         HAUTEUR = 50
         BORDURE = 12
 
-        SCREEN_WIDTH = longeur*16 + 2*BORDURE
-        SCREEN_HEIGHT = largeur*16 + HAUTEUR + BORDURE
+        SCREEN_WIDTH = LARGEUR*16 + 2*BORDURE
+        SCREEN_HEIGHT = LONGUEUR * 16 + HAUTEUR + BORDURE
 
         background = (192, 192, 192)
         colorWhite = (255, 255, 255)
@@ -87,8 +87,8 @@ class Vue():
                              pygame.Rect(10, 10,  2, HAUTEUR - 2*BORDURE + 2))
 
             # On affiche le tableau
-            for i in range(longeur):
-                for y in range(largeur):
+            for i in range(LARGEUR):
+                for y in range(LONGUEUR):
                     window.blit(self.sprite.getbloc_full(),
                                 (16*i+BORDURE, 16*y+HAUTEUR))
 
@@ -143,18 +143,18 @@ class Vue():
                         if y >= 0:
                             while genere:
                                 demineur = Generation(
-                                    longeur, largeur, NB_MINES, pos_x, pos_y)
+                                    LONGUEUR, LARGEUR, NB_MINES, pos_x, pos_y)
                                 genere = False
                             if PERDU == False:
                                 arrayHide = demineur.deleteCase(
                                     pos_x, pos_y)
 
-                            for i in range(len(arrayHide)):
+                            for i in range(len(arrayHide[0])):
                                 for y in range(len(arrayHide)):
                                     if arrayHide[y][i] != '*':
                                         # Si on perd
                                         if arrayHide[y][i] == 'B':
-                                            for g in range(len(demineur.array)):
+                                            for g in range(len(demineur.array[0])):
                                                 for w in range(len(demineur.array)):
                                                     if demineur.array[w][g] == 'b':
                                                         window.blit(
@@ -169,7 +169,12 @@ class Vue():
                                             window.blit(
                                                 eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+BORDURE, y*16+HAUTEUR))
                         elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
-                            print("test")
+                            genere = True
+                            # Affiche un tableau de bloc plein
+                            for i in range(LARGEUR):
+                                for y in range(LONGUEUR):
+                                    window.blit(self.sprite.getbloc_full(),
+                                                (16*i+BORDURE, 16*y+HAUTEUR))
                         # Réaffiche le bon smiley
                         if PERDU == False:
                             window.blit(self.sprite.getsmiley_happy(), ((SCREEN_WIDTH/2) -
@@ -184,7 +189,7 @@ class Vue():
                         if not genere and y >= 0:
                             arrayHide = demineur.setFlagorInt(
                                 pos_x, pos_y, NB_MINES)
-                            for i in range(len(arrayHide)):
+                            for i in range(len(arrayHide[0])):
                                 for y in range(len(arrayHide)):
                                     if arrayHide[y][i] == 'F':
                                         window.blit(
@@ -216,7 +221,7 @@ class Vue():
                             x = cur[0]-BORDURE
                             dem = demineur.getArrayHide()
                             if dem[int(y / 16)][int((x / 16))] == '*':
-                                for i in range(len(dem)):
+                                for i in range(len(dem[0])):
                                     for j in range(len(dem)):
                                         if dem[j][i] == '*':
                                             window.blit(
@@ -224,7 +229,7 @@ class Vue():
                                 window.blit(
                                     self.sprite.getbloc_empty(), (int(x / 16)*16+BORDURE, math.floor(y/16)*16+HAUTEUR))
                             else:
-                                for i in range(len(dem)):
+                                for i in range(len(dem[0])):
                                     for j in range(len(dem)):
                                         if dem[j][i] == '*':
                                             window.blit(

@@ -17,14 +17,14 @@ class Generation:
         self.time = time.time()
         self.lasttime = 0
         self.utils = utils.Utils()
-
-        arrayImposible = self.utils.impossible_array(xClick, yClick)
+        arrayImposible = self.utils.impossible_array(
+            xClick, yClick, self.row, self.column)
         # genere des bombes dès que l'on est pas sur une case impossible ou que le il n'y a pas de bombe
         tempNbBomb = 0
         while tempNbBomb != self.nbBomb:
             erreur = 0
-            x = random.randint(0, row-1)
-            y = random.randint(0, column-1)
+            x = random.randint(0, self.row-1)
+            y = random.randint(0, self.column-1)
             for i in range(len(arrayImposible)):
                 if arrayImposible[i] == [x, y]:
                     erreur = 1
@@ -39,7 +39,7 @@ class Generation:
             for y in range(len(self.array[0])):
                 if (self.array[x][y] != 'b'):
                     self.array[x][y] = self.utils.get_adjacent_numbers(
-                        self.array, x, y)
+                        self.array, x, y, self.row, self.column)
         self.deleteCase(self.xClick, self.yClick)
 
     def deleteCase(self, x, y):
@@ -53,22 +53,22 @@ class Generation:
             if i > 0:
                 if self.arrayHide[j][i-1] != 'F':
                     self.arrayHide[j][i-1] = (self.array[j][i-1])
-            if i < 15:
+            if i < self.row-1:
                 if self.arrayHide[j][i+1] != 'F':
                     self.arrayHide[j][i+1] = (self.array[j][i+1])
-            if j < 15:
+            if j < self.column-1:
                 if self.arrayHide[j+1][i] != 'F':
                     self.arrayHide[j+1][i] = (self.array[j+1][i])
             if i > 0 and j > 0:
                 if self.arrayHide[j-1][i-1] != 'F':
                     self.arrayHide[(j-1)][(i-1)] = (self.array[(j-1)][(i-1)])
-            if i < 15 and j < 15:
+            if i < self.row-1 and j < self.column-1:
                 if self.arrayHide[j+1][i+1] != 'F':
                     self.arrayHide[(j+1)][(i+1)] = (self.array[(j+1)][(i+1)])
-            if i > 0 and j < 15:
+            if i > 0 and j < self.column-1:
                 if self.arrayHide[j+1][i-1] != 'F':
                     self.arrayHide[(j+1)][(i-1)] = (self.array[(j+1)][(i-1)])
-            if i < 15 and j > 0:
+            if i < self.row-1 and j > 0:
                 if self.arrayHide[j-1][i+1] != 'F':
                     self.arrayHide[(j-1)][(i+1)] = (self.array[(j-1)][(i+1)])
         if self.arrayHide[y][x] != 'F':
@@ -80,7 +80,7 @@ class Generation:
                 index = 0
                 while (len(getZeroTab) > index):
                     tabtemp = self.utils.get_adjacent_numbers2(
-                        self.array, getZeroTab[index][0], getZeroTab[index][1])
+                        self.array, getZeroTab[index][0], getZeroTab[index][1], self.row, self.column)
                     for i in range(len(tabtemp)):
                         if tabtemp[i] not in getZeroTab:
                             getZeroTab.append(
