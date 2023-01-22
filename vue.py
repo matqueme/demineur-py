@@ -126,7 +126,7 @@ class Vue():
                                 window.blit(self.sprite.getsmiley_shock(), ((SCREEN_WIDTH/2) -
                                                                             SMILEY/2, HAUTEUR/2 - SMILEY/2))
                             # si on est dans le menu affiche le btnclick si on click dessus
-                            elif (x < (SCREEN_WIDTH/2) + SMILEY/2 and x > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2):
+                            elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                                 window.blit(self.sprite.getsmiley_happy_click(), ((SCREEN_WIDTH/2) -
                                                                                   SMILEY/2, HAUTEUR/2 - SMILEY/2))
                         else:
@@ -168,7 +168,7 @@ class Vue():
                                         else:
                                             window.blit(
                                                 eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+BORDURE, y*16+HAUTEUR))
-                        elif x < (SCREEN_WIDTH/2) + SMILEY/2 and x > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
+                        elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                             print("test")
                         # Réaffiche le bon smiley
                         if PERDU == False:
