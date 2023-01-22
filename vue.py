@@ -96,11 +96,17 @@ class Vue():
                                                         SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
             for i in range(3):
-                window.blit(self.sprite.getdigit_1(),
+                window.blit(self.sprite.getdigit_0(),
                             (SCREEN_WIDTH - (i * DIGIT_X) - DIGIT_X - BORDURE, HAUTEUR/2 - DIGIT_Y/2))
-            for i in range(3):
+
+            # Calcul le nombre de bombes restantes
+            nb_bombes = list(str(NB_MINES))
+            for i in range(3-len(nb_bombes)):
+                nb_bombes.insert(0, '0')
+            # Affiche le nombre de bombes restantes
+            for i in range(len(nb_bombes)):
                 window.blit(
-                    self.sprite.getdigit_0(), (i*DIGIT_X + BORDURE, HAUTEUR/2 - DIGIT_Y/2))
+                    self.sprite.printNumber(i, nb_bombes), (i*DIGIT_X + BORDURE, HAUTEUR/2 - DIGIT_Y/2))
 
             while run:
                 # event during game
@@ -120,10 +126,9 @@ class Vue():
                                 window.blit(self.sprite.getsmiley_shock(), ((SCREEN_WIDTH/2) -
                                                                             SMILEY/2, HAUTEUR/2 - SMILEY/2))
                             # si on est dans le menu affiche le btnclick si on click dessus
-                            else:
-                                if (x < (SCREEN_WIDTH/2) + SMILEY/2 and x > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2):
-                                    window.blit(self.sprite.getsmiley_happy_click(), ((SCREEN_WIDTH/2) -
-                                                                                      SMILEY/2, HAUTEUR/2 - SMILEY/2))
+                            elif (x < (SCREEN_WIDTH/2) + SMILEY/2 and x > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2):
+                                window.blit(self.sprite.getsmiley_happy_click(), ((SCREEN_WIDTH/2) -
+                                                                                  SMILEY/2, HAUTEUR/2 - SMILEY/2))
                         else:
                             window.blit(self.sprite.getsmiley_lose(), ((SCREEN_WIDTH/2) -
                                                                        SMILEY/2, HAUTEUR/2 - SMILEY/2))
@@ -163,6 +168,8 @@ class Vue():
                                         else:
                                             window.blit(
                                                 eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+BORDURE, y*16+HAUTEUR))
+                        elif x < (SCREEN_WIDTH/2) + SMILEY/2 and x > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
+                            print("test")
                         # Réaffiche le bon smiley
                         if PERDU == False:
                             window.blit(self.sprite.getsmiley_happy(), ((SCREEN_WIDTH/2) -
