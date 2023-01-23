@@ -114,11 +114,6 @@ class Generation:
         if a == 8:
             print(a)
         return a
-    # def timestmp(self):
-        # time_stamp = time.time()
-        # if math.floor(time_stamp - self.time) > self.lasttime:
-        # print(math.floor(time_stamp - self.time))
-        # self.lasttime = math.floor(time_stamp - self.time)
 
 
 '''question :

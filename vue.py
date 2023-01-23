@@ -32,6 +32,9 @@ class Vue():
 
         SMILEY = 25
 
+        self.start_ticks = 0
+        self.seconds = 0
+
         def grille():
             WIN = False
             PERDU = False
@@ -112,12 +115,22 @@ class Vue():
             while run:
                 # event during game
                 for event in pygame.event.get():
+                    # timer tout les secondes
+                    if not genere and PERDU == False and WIN == False:
+                        self.seconds = (pygame.time.get_ticks() -
+                                        self.start_ticks)/1000
+                        nb_sec = list(str(math.floor(self.seconds)))
+                        for i in range(3-len(nb_sec)):
+                            nb_sec.insert(0, '0')
+                        for i in range(len(nb_sec)):
+                            window.blit(self.sprite.printNumber(i, nb_sec),
+                                        (SCREEN_WIDTH - (i * DIGIT_X) - DIGIT_X - BORDURE, HAUTEUR/2 - DIGIT_Y/2))
                     if event.type == pygame.QUIT:
                         run = False
                         pygame.quit()
                         quit()
 
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT:
+                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == LEFT:
                         x, y = event.pos
                         y -= HAUTEUR
                         x -= BORDURE
@@ -134,7 +147,7 @@ class Vue():
                             window.blit(self.sprite.getsmiley_lose(), ((SCREEN_WIDTH/2) -
                                                                        SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
-                    if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
+                    elif event.type == pygame.MOUSEBUTTONUP and event.button == LEFT:
                         # Set the x, y postions of the mouse click
                         x, y = event.pos
                         y -= HAUTEUR
@@ -148,6 +161,7 @@ class Vue():
                                 demineur = Generation(
                                     LONGUEUR, LARGEUR, NB_MINES, pos_x, pos_y)
                                 genere = False
+                                self.start_ticks = pygame.time.get_ticks()
                             if PERDU == False and WIN == False:
                                 arrayHide = demineur.deleteCase(
                                     pos_x, pos_y)
@@ -200,7 +214,7 @@ class Vue():
                             window.blit(self.sprite.getsmiley_happy(), ((SCREEN_WIDTH/2) -
                                                                         SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT and PERDU == False and WIN == False:
+                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT and PERDU == False and WIN == False:
                         # Set the x, y postions of the mouse click
                         x, y = event.pos
                         y -= HAUTEUR
@@ -233,27 +247,28 @@ class Vue():
 
                     # Pour actualiser le click long
                     if not genere and PERDU == False and WIN == False:
-                        cur = pygame.mouse.get_pos()
                         click = pygame.mouse.get_pressed()
                         # demineur.timestmp()
-                        if click[0] == True and cur[1]-HAUTEUR >= 0:
-                            y = cur[1]-HAUTEUR
-                            x = cur[0]-BORDURE
-                            dem = demineur.getArrayHide()
-                            if dem[int(y / 16)][int((x / 16))] == '*':
-                                for i in range(len(dem[0])):
-                                    for j in range(len(dem)):
-                                        if dem[j][i] == '*':
-                                            window.blit(
-                                                self.sprite.getbloc_full(), (i*16+BORDURE, j*16+HAUTEUR))
-                                window.blit(
-                                    self.sprite.getbloc_empty(), (int(x / 16)*16+BORDURE, math.floor(y/16)*16+HAUTEUR))
-                            else:
-                                for i in range(len(dem[0])):
-                                    for j in range(len(dem)):
-                                        if dem[j][i] == '*':
-                                            window.blit(
-                                                self.sprite.getbloc_full(), (i*16+BORDURE, j*16+HAUTEUR))
+                        if click[0] == True:
+                            cur = pygame.mouse.get_pos()
+                            if cur[1]-HAUTEUR >= 0:
+                                y = cur[1]-HAUTEUR
+                                x = cur[0]-BORDURE
+                                dem = demineur.getArrayHide()
+                                if dem[int(y / 16)][int((x / 16))] == '*':
+                                    for i in range(len(dem[0])):
+                                        for j in range(len(dem)):
+                                            if dem[j][i] == '*':
+                                                window.blit(
+                                                    self.sprite.getbloc_full(), (i*16+BORDURE, j*16+HAUTEUR))
+                                    window.blit(
+                                        self.sprite.getbloc_empty(), (int(x / 16)*16+BORDURE, math.floor(y/16)*16+HAUTEUR))
+                                else:
+                                    for i in range(len(dem[0])):
+                                        for j in range(len(dem)):
+                                            if dem[j][i] == '*':
+                                                window.blit(
+                                                    self.sprite.getbloc_full(), (i*16+BORDURE, j*16+HAUTEUR))
                 pygame.display.update()
             return
         grille()
