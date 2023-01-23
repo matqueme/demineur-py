@@ -170,11 +170,21 @@ class Vue():
                                                 eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+BORDURE, y*16+HAUTEUR))
                         elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                             genere = True
+                            PERDU == False
                             # Affiche un tableau de bloc plein
                             for i in range(LARGEUR):
                                 for y in range(LONGUEUR):
                                     window.blit(self.sprite.getbloc_full(),
                                                 (16*i+BORDURE, 16*y+HAUTEUR))
+                            # Calcul le nombre de bombes restantes
+                            nb_bombes = list(str(NB_MINES))
+                            for i in range(3-len(nb_bombes)):
+                                nb_bombes.insert(0, '0')
+                            # Affiche le nombre de bombes restantes
+                            for i in range(len(nb_bombes)):
+                                window.blit(
+                                    self.sprite.printNumber(i, nb_bombes), (i*DIGIT_X + BORDURE, HAUTEUR/2 - DIGIT_Y/2))
+
                         # Réaffiche le bon smiley
                         if PERDU == False:
                             window.blit(self.sprite.getsmiley_happy(), ((SCREEN_WIDTH/2) -
