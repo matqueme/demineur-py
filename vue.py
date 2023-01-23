@@ -170,7 +170,7 @@ class Vue():
                                                 eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+BORDURE, y*16+HAUTEUR))
                         elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                             genere = True
-                            PERDU == False
+                            PERDU = False
                             # Affiche un tableau de bloc plein
                             for i in range(LARGEUR):
                                 for y in range(LONGUEUR):
