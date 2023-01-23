@@ -107,6 +107,13 @@ class Generation:
     def getNb_Bombe(self):
         a = (self.arrayHide == 'F').sum()
         return a
+
+    def getWin(self):
+        a = (self.arrayHide == '*').sum() + (self.arrayHide ==
+                                             'F').sum() + (self.arrayHide == 'I').sum()
+        if a == 8:
+            print(a)
+        return a
     # def timestmp(self):
         # time_stamp = time.time()
         # if math.floor(time_stamp - self.time) > self.lasttime:

@@ -123,6 +123,8 @@ class Sprites():
             return "self.sprite.getbloc_number_8()"
         if tab == 'F':
             return "self.sprite.getbloc_flag()"
+        if tab == 'I':
+            return "self.sprite.getbloc_interrogation()"
 
     def getbloc_full(self): return self.bloc_full
     def getbloc_empty(self): return self.bloc_empty

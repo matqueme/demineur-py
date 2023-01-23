@@ -33,6 +33,7 @@ class Vue():
         SMILEY = 25
 
         def grille():
+            WIN = False
             PERDU = False
             self.arrayHide = []
             genere = True
@@ -121,7 +122,7 @@ class Vue():
                         y -= HAUTEUR
                         x -= BORDURE
                         # affiche le shock si on est dans le jeux
-                        if PERDU == False:
+                        if PERDU == False and WIN == False:
                             if y >= 0:
                                 window.blit(self.sprite.getsmiley_shock(), ((SCREEN_WIDTH/2) -
                                                                             SMILEY/2, HAUTEUR/2 - SMILEY/2))
@@ -129,7 +130,7 @@ class Vue():
                             elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                                 window.blit(self.sprite.getsmiley_happy_click(), ((SCREEN_WIDTH/2) -
                                                                                   SMILEY/2, HAUTEUR/2 - SMILEY/2))
-                        else:
+                        elif WIN == False:
                             window.blit(self.sprite.getsmiley_lose(), ((SCREEN_WIDTH/2) -
                                                                        SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
@@ -139,15 +140,23 @@ class Vue():
                         y -= HAUTEUR
                         x -= BORDURE
                         pos_x, pos_y = int(x / 16), int(y / 16)
+
                         # si on est dans le jeu
                         if y >= 0:
+
                             while genere:
                                 demineur = Generation(
                                     LONGUEUR, LARGEUR, NB_MINES, pos_x, pos_y)
                                 genere = False
-                            if PERDU == False:
+                            if PERDU == False and WIN == False:
                                 arrayHide = demineur.deleteCase(
                                     pos_x, pos_y)
+
+                            # Victoire
+                            if demineur.getWin() == NB_MINES:
+                                WIN = True
+                                window.blit(self.sprite.getsmiley_win(), ((SCREEN_WIDTH/2) -
+                                                                          SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
                             for i in range(len(arrayHide[0])):
                                 for y in range(len(arrayHide)):
@@ -171,6 +180,7 @@ class Vue():
                         elif x + BORDURE < (SCREEN_WIDTH/2) + SMILEY/2 and x + BORDURE > (SCREEN_WIDTH/2) - SMILEY/2 and y + HAUTEUR < (HAUTEUR/2) + SMILEY/2 and y + HAUTEUR > (HAUTEUR/2) - SMILEY/2:
                             genere = True
                             PERDU = False
+                            WIN = False
                             # Affiche un tableau de bloc plein
                             for i in range(LARGEUR):
                                 for y in range(LONGUEUR):
@@ -186,11 +196,11 @@ class Vue():
                                     self.sprite.printNumber(i, nb_bombes), (i*DIGIT_X + BORDURE, HAUTEUR/2 - DIGIT_Y/2))
 
                         # Réaffiche le bon smiley
-                        if PERDU == False:
+                        if PERDU == False and WIN == False:
                             window.blit(self.sprite.getsmiley_happy(), ((SCREEN_WIDTH/2) -
                                                                         SMILEY/2, HAUTEUR/2 - SMILEY/2))
 
-                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT and PERDU == False:
+                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == RIGHT and PERDU == False and WIN == False:
                         # Set the x, y postions of the mouse click
                         x, y = event.pos
                         y -= HAUTEUR
@@ -211,18 +221,18 @@ class Vue():
                                         window.blit(
                                             self.sprite.getbloc_full(), (int(i*16)+BORDURE, int(y*16)+HAUTEUR))
 
-                     # Calcul le nombre de bombes restantes
-                        nb_bombe = NB_MINES - demineur.getNb_Bombe()
-                        nb_bombes = list(str(nb_bombe))
-                        for i in range(3-len(nb_bombes)):
-                            nb_bombes.insert(0, '0')
+                            # Calcul le nombre de bombes restantes
+                            nb_bombe = NB_MINES - demineur.getNb_Bombe()
+                            nb_bombes = list(str(nb_bombe))
+                            for i in range(3-len(nb_bombes)):
+                                nb_bombes.insert(0, '0')
                      # Affiche le nombre de bombes restantes
                         for i in range(len(nb_bombes)):
                             window.blit(
                                 self.sprite.printNumber(i, nb_bombes), (i*DIGIT_X + BORDURE, HAUTEUR/2 - DIGIT_Y/2))
 
                     # Pour actualiser le click long
-                    if not genere and PERDU == False:
+                    if not genere and PERDU == False and WIN == False:
                         cur = pygame.mouse.get_pos()
                         click = pygame.mouse.get_pressed()
                         # demineur.timestmp()
