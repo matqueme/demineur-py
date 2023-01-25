@@ -1,12 +1,15 @@
+from time import sleep
+from typing import Callable
 import pygame
 from pygame.locals import *
 from sprites import Sprites
 from modele import Generation
 import math
+import threading as th
 
 
 class Vue():
-    def __init__(self):
+    def __init__(self, t):
 
         # Taille du tableau de jeu
         self.longueur = 16
@@ -55,6 +58,7 @@ class Vue():
         self.sprite = Sprites()
         self.affiche_bordure()
         self.grille()
+        self.t = t
 
     def affiche_bordure(self):
         pygame.draw.rect(self.window, self.colorWhite,
@@ -132,8 +136,10 @@ class Vue():
                                          (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
                 if event.type == pygame.QUIT:
                     self.run = False
+                    t.stop = True
+                    t.join()
                     pygame.quit()
-                    quit()
+                    exit()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == self.left:
                     x, y = event.pos
@@ -278,4 +284,30 @@ class Vue():
         return
 
 
-Vue()
+class appThread(th.Thread):
+    def __init__(self, thread: Callable) -> None:
+        super(appThread, self).__init__()
+        self.stop = False
+        self.thread = thread
+
+    def run(self) -> None:
+        while True:
+            if self.stop:
+                return
+            self.thread()
+
+
+def __app__():
+    """ ton code à faire tourner -> sans while ! """
+    sleep(1)
+    print("hello")
+
+
+if __name__ == "__main__":
+    t = appThread(thread=__app__).start()
+    """ le thread tourne """
+    Vue(t)
+    """ quand tu veux le stopper """
+    print("fin vue")
+    t.stop = True  # la variable stop passe à True donc return le While de appThread()
+    t.join()  # supprime l'instance de la mémoire
