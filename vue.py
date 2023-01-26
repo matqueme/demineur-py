@@ -5,9 +5,7 @@ from modele import Generation
 import math
 import threading as th
 import utils
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import pygame  # NOQA
+import pygame
 
 
 class Vue():
@@ -65,6 +63,13 @@ class Vue():
         self.t.start()
         self.t.pause()
         self.grille()
+
+    def fillBlocFull(self):
+        for i in range(len(self.arrayHide[0])):
+            for j in range(len(self.arrayHide)):
+                if self.arrayHide[j][i] == '*':
+                    self.window.blit(
+                        self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
 
     def affiche_bordure(self):
         pygame.draw.rect(self.window, self.colorWhite,
@@ -277,11 +282,7 @@ class Vue():
                             self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle:
-                    for i in range(len(self.arrayHide[0])):
-                        for j in range(len(self.arrayHide)):
-                            if self.arrayHide[j][i] == '*':
-                                self.window.blit(
-                                    self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+                    self.fillBlocFull()
 
                 # click middle
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == self.middle and self.lose == False and self.win == False:
@@ -305,11 +306,7 @@ class Vue():
                             x = cur[0]-self.bordure
                             dispfull = self.utils.tryMiddleClick(
                                 self.arrayHide, int(x / 16), int((y / 16)), self.longueur, self.largeur)
-                            for i in range(len(self.arrayHide[0])):
-                                for j in range(len(self.arrayHide)):
-                                    if self.arrayHide[j][i] == '*':
-                                        self.window.blit(
-                                            self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+                            self.fillBlocFull()
                             for i in range(len(dispfull)):
                                 self.window.blit(
                                     self.sprite.getbloc_empty(), (dispfull[i][0]*16+self.bordure, dispfull[i][1]*16+self.hauteur))
@@ -320,19 +317,11 @@ class Vue():
                             y = cur[1]-self.hauteur
                             x = cur[0]-self.bordure
                             if self.arrayHide[int(y / 16)][int((x / 16))] == '*':
-                                for i in range(len(self.arrayHide[0])):
-                                    for j in range(len(self.arrayHide)):
-                                        if self.arrayHide[j][i] == '*':
-                                            self.window.blit(
-                                                self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+                                self.fillBlocFull()
                                 self.window.blit(
                                     self.sprite.getbloc_empty(), (int(x / 16)*16+self.bordure, math.floor(y/16)*16+self.hauteur))
                             else:
-                                for i in range(len(self.arrayHide[0])):
-                                    for j in range(len(self.arrayHide)):
-                                        if self.arrayHide[j][i] == '*':
-                                            self.window.blit(
-                                                self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+                                self.fillBlocFull()
 
             pygame.display.update()
         return
@@ -353,11 +342,11 @@ class TimerTh(th.Thread):
 
     def __init__(self, *args, **kwargs):
         super(TimerTh, self).__init__(*args, **kwargs)
+        self.cpt = 0
         self.__flag = th.Event()  # The flag used to pause the thread
         self.__flag.set()  # Set to True
         self.__running = th.Event()  # Used to stop the thread identification
         self.__running.set()  # Set running to True
-        self.cpt = 0
 
     def run(self):
         while self.__running.is_set():
