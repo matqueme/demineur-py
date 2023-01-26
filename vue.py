@@ -1,14 +1,13 @@
-from functools import wraps
 import time
-from time import sleep
-from typing import Callable
-import pygame
 from pygame.locals import *
 from sprites import Sprites
 from modele import Generation
 import math
 import threading as th
-import cProfile
+import utils
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame  # NOQA
 
 
 class Vue():
@@ -50,6 +49,8 @@ class Vue():
         self.genere = True
         self.run = True
         self.t = t
+
+        self.utils = utils.Utils()
 
         pygame.init()
         self.window = pygame.display.set_mode(
@@ -275,6 +276,13 @@ class Vue():
                         self.window.blit(
                             self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
 
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle:
+                    for i in range(len(self.arrayHide[0])):
+                        for j in range(len(self.arrayHide)):
+                            if self.arrayHide[j][i] == '*':
+                                self.window.blit(
+                                    self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+
                 # click middle
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == self.middle and self.lose == False and self.win == False:
                     x, y = event.pos
@@ -290,25 +298,39 @@ class Vue():
                 # Pour actualiser le click long
                 if not self.genere and self.lose == False and self.win == False:
                     click = pygame.mouse.get_pressed()
-                    # self.demineur.timestmp()
+                    if click[1] == True:
+                        cur = pygame.mouse.get_pos()
+                        if cur[1]-self.hauteur >= 0:
+                            y = cur[1]-self.hauteur
+                            x = cur[0]-self.bordure
+                            dispfull = self.utils.tryMiddleClick(
+                                self.arrayHide, int(x / 16), int((y / 16)), self.longueur, self.largeur)
+                            for i in range(len(self.arrayHide[0])):
+                                for j in range(len(self.arrayHide)):
+                                    if self.arrayHide[j][i] == '*':
+                                        self.window.blit(
+                                            self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+                            for i in range(len(dispfull)):
+                                self.window.blit(
+                                    self.sprite.getbloc_empty(), (dispfull[i][0]*16+self.bordure, dispfull[i][1]*16+self.hauteur))
+
                     if click[0] == True:
                         cur = pygame.mouse.get_pos()
                         if cur[1]-self.hauteur >= 0:
                             y = cur[1]-self.hauteur
                             x = cur[0]-self.bordure
-                            dem = self.demineur.getArrayHide()
-                            if dem[int(y / 16)][int((x / 16))] == '*':
-                                for i in range(len(dem[0])):
-                                    for j in range(len(dem)):
-                                        if dem[j][i] == '*':
+                            if self.arrayHide[int(y / 16)][int((x / 16))] == '*':
+                                for i in range(len(self.arrayHide[0])):
+                                    for j in range(len(self.arrayHide)):
+                                        if self.arrayHide[j][i] == '*':
                                             self.window.blit(
                                                 self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
                                 self.window.blit(
                                     self.sprite.getbloc_empty(), (int(x / 16)*16+self.bordure, math.floor(y/16)*16+self.hauteur))
                             else:
-                                for i in range(len(dem[0])):
-                                    for j in range(len(dem)):
-                                        if dem[j][i] == '*':
+                                for i in range(len(self.arrayHide[0])):
+                                    for j in range(len(self.arrayHide)):
+                                        if self.arrayHide[j][i] == '*':
                                             self.window.blit(
                                                 self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
 
@@ -327,10 +349,10 @@ class appThread(th.Thread):
             self.cnt = self.thread(self.cnt)
 
 
-class Job(th.Thread):
+class TimerTh(th.Thread):
 
     def __init__(self, *args, **kwargs):
-        super(Job, self).__init__(*args, **kwargs)
+        super(TimerTh, self).__init__(*args, **kwargs)
         self.__flag = th.Event()  # The flag used to pause the thread
         self.__flag.set()  # Set to True
         self.__running = th.Event()  # Used to stop the thread identification
@@ -342,8 +364,8 @@ class Job(th.Thread):
             # return immediately when it is True, block until the internal flag is True when it is False
             self.__flag.wait()
             if (self.cpt < 999):
-                self.cpt += 1
                 time.sleep(1)
+                self.cpt += 1
 
     def pause(self):
         self.__flag.clear()  # Set to False to block the thread
@@ -357,5 +379,5 @@ class Job(th.Thread):
         self.__running.clear()  # Set to False
 
 
-t = Job()
+t = TimerTh()
 Vue(t)

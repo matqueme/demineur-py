@@ -126,3 +126,32 @@ class Utils:
             # print(arthur)
         return arthur
         # verifie le nombre de bombe a une coordonnée precise
+
+    def tryMiddleClick(self, grid, i, j, row, column):
+        arthur = []
+        if grid[j][i] != '*':
+            if j > 0:
+                if (grid[j-1][i] == '*'):
+                    arthur.append([i, j-1])
+            if i > 0:
+                if (grid[j][i-1] == '*'):
+                    arthur.append([i-1, j])
+            if i < row-1:
+                if (grid[j][i+1] == '*'):
+                    arthur.append([i+1, j])
+            if j < column-1:
+                if (grid[j+1][i] == '*'):
+                    arthur.append([i, j+1])
+            if i > 0 and j > 0:
+                if (grid[(j-1)][(i-1)] == '*'):
+                    arthur.append([(i-1), (j-1)])
+            if i < row-1 and j < column-1:
+                if (grid[(j+1)][(i+1)] == '*'):
+                    arthur.append([(i+1), (j+1)])
+            if i > 0 and j < column-1:
+                if (grid[(j+1)][(i-1)] == '*'):
+                    arthur.append([(i-1), (j+1)])
+            if i < row-1 and j > 0:
+                if (grid[(j-1)][(i+1)] == '*'):
+                    arthur.append([(i+1), (j-1)])
+        return arthur
