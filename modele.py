@@ -2,7 +2,6 @@ import numpy as np
 import random
 import utils
 import time
-import math
 
 
 class Generation:
@@ -114,9 +113,3 @@ class Generation:
         if a == 8:
             print(a)
         return a
-
-
-'''question :
-- Le test autour de chaque nombre avec tout les if c'est bien ?
-- Faire un tableau avec la boucle pour les valeurs interditent c'est bien ou autant mettre en statique ?
-- On fait la génération dans le __init__ ? '''
