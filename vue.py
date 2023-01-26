@@ -1,3 +1,4 @@
+import time
 from time import sleep
 from typing import Callable
 import pygame
@@ -124,7 +125,9 @@ class Vue():
             # event during game
             for event in pygame.event.get():
                 # timer tout les secondes
-                if not self.genere and self.lose == False and self.win == False:
+                if not self.genere and self.lose == False and self.win == False and self.t.cnt != self.seconds:
+                    print(self.t.cnt)
+                    self.seconds = self.t.cnt
                     nb_sec = list(str(self.seconds))
                     for i in range(3-len(nb_sec)):
                         nb_sec.insert(0, '0')
@@ -179,8 +182,8 @@ class Vue():
                             self.win = True
                             self.t.stop = True
                             self.t.join()
-                            self.window.blit(self.sprite.getsmiley_self.win(), ((self.screen_width/2) -
-                                                                                self.smiley/2, self.hauteur/2 - self.smiley/2))
+                            self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
+                                                                           self.smiley/2, self.hauteur/2 - self.smiley/2))
 
                         for i in range(len(arrayHide[0])):
                             for y in range(len(arrayHide)):
@@ -286,22 +289,20 @@ class Vue():
 
 
 class appThread(th.Thread):
-    def __init__(self, thread: Callable) -> None:
+    def __init__(self, thread) -> None:
         super(appThread, self).__init__()
-        self.stop = False
+        self.cnt = 0
         self.thread = thread
 
     def run(self) -> None:
         while True:
-            if self.stop:
-                return
-            self.thread()
+            self.cnt = self.thread(self.cnt)
 
 
-def __app__():
-    """ code à faire tourner -> sans while ! """
-    sleep(1)
-    print("hello")
+def __app__(cnt):
+    cnt += 1
+    time.sleep(1)
+    return cnt
 
 
 if __name__ == "__main__":
