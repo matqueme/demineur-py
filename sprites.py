@@ -24,6 +24,8 @@ class Sprites():
             sprite_sheet, PIXEL, PIXEL, 85, 51)
         self.bloc_mine_explode = self.get_image(
             sprite_sheet, PIXEL, PIXEL, 102, 51)
+        self.bloc_mine_wrong = self.get_image(
+            sprite_sheet, PIXEL, PIXEL, 119, 51)
         self.bloc_number_1 = self.get_image(
             sprite_sheet, PIXEL, PIXEL, 0, 68)
         self.bloc_number_2 = self.get_image(
@@ -132,6 +134,7 @@ class Sprites():
     def getbloc_interrogation(self): return self.bloc_interrogation
     def getbloc_mine(self): return self.bloc_mine
     def getbloc_mine_explode(self): return self.bloc_mine_explode
+    def getbloc_mine_wrong(self): return self.bloc_mine_wrong
     def getbloc_number_1(self): return self.bloc_number_1
     def getbloc_number_2(self): return self.bloc_number_2
     def getbloc_number_3(self): return self.bloc_number_3

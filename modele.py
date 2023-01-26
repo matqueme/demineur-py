@@ -17,7 +17,7 @@ class Generation:
         self.lasttime = 0
         self.utils = utils.Utils()
         arrayImposible = self.utils.impossible_array(
-            xClick, yClick, self.row, self.column)
+            xClick, yClick, self.column, self.row)
         # genere des bombes dès que l'on est pas sur une case impossible ou que le il n'y a pas de bombe
         tempNbBomb = 0
         while tempNbBomb != self.nbBomb:

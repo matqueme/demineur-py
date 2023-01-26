@@ -17,7 +17,10 @@ class Vue():
 
         self.nb_mines = 40
 
-        self.hauteur = 50
+        self.niveau = 1
+
+        self.menuHeight = 20
+        self.hauteur = 50 + self.menuHeight
         self.bordure = 12
 
         self.screen_width = self.largeur*16 + 2*self.bordure
@@ -49,19 +52,25 @@ class Vue():
         self.t = t
 
         self.utils = utils.Utils()
-
+        self.t.start()
+        self.t.pause()
         pygame.init()
+        pygame.font.init()  # you have to call this at the start,
+        # if you want to use this module.
+        self.my_font = pygame.font.SysFont('Arial', 12)
+        self.initStart()
+
+    def initStart(self):
+        self.genere = True
         self.window = pygame.display.set_mode(
             (self.screen_width, self.screen_height))
+        self.sprite = Sprites()
+        self.window.fill(self.background)
         pygame.display.set_caption('Démineur')
         pygame.display.set_icon(pygame.image.load('./icon.png'))
         pygame.display.flip()
 
-        self.window.fill(self.background)
-        self.sprite = Sprites()
         self.affiche_bordure()
-        self.t.start()
-        self.t.pause()
         self.grille()
 
     def fillBlocFull(self):
@@ -72,11 +81,16 @@ class Vue():
                         self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
 
     def affiche_bordure(self):
+        # print text on the screen at 0,0
+        text_surface = self.my_font.render('Niveau', False, (0, 0, 0))
+        self.window.blit(text_surface, dest=(
+            5, (self.menuHeight-self.my_font.size("Niveau")[1])/2))
+
         pygame.draw.rect(self.window, self.colorWhite,
-                         pygame.Rect(0, 0, self.screen_width, 2))
+                         pygame.Rect(0, self.menuHeight, self.screen_width, 2))
 
         pygame.draw.rect(self.window, self.colorGrey,
-                         pygame.Rect(self.bordure, 10, self.screen_width - 2*self.bordure, 2))
+                         pygame.Rect(self.bordure, 10+self.menuHeight, self.screen_width - 2*self.bordure, 2))
 
         pygame.draw.rect(self.window, self.colorWhite,
                          pygame.Rect(self.bordure-2, self.hauteur-self.bordure, self.screen_width - 2*self.bordure+2, 2))
@@ -92,7 +106,7 @@ class Vue():
 
         # self.longueur
         pygame.draw.rect(self.window, self.colorWhite,
-                         pygame.Rect(0, 0, 2, self.screen_height))
+                         pygame.Rect(0, self.menuHeight, 2, self.screen_height-self.menuHeight))
 
         pygame.draw.rect(self.window, self.colorGrey,
                          pygame.Rect(10, self.hauteur-2, 2, self.screen_height - self.hauteur - self.bordure + 2))
@@ -101,13 +115,13 @@ class Vue():
                          pygame.Rect(self.screen_width - self.bordure, self.hauteur-2,  2, self.screen_height - self.hauteur - self.bordure + 2))
 
         pygame.draw.rect(self.window, self.colorGrey,
-                         pygame.Rect(self.screen_width - 2, 0,  2, self.screen_height))
+                         pygame.Rect(self.screen_width - 2, self.menuHeight,  2, self.screen_height-self.menuHeight))
 
         pygame.draw.rect(self.window, self.colorWhite,
-                         pygame.Rect(self.screen_width - self.bordure, 10,  2, self.hauteur - 2*self.bordure + 4))
+                         pygame.Rect(self.screen_width - self.bordure, 10+self.menuHeight,  2, self.hauteur - 2*self.bordure + 4-self.menuHeight))
 
         pygame.draw.rect(self.window, self.colorGrey,
-                         pygame.Rect(10, 10,  2, self.hauteur - 2*self.bordure + 2))
+                         pygame.Rect(10, 10+self.menuHeight,  2, self.hauteur - 2*self.bordure + 2-self.menuHeight))
 
     def lose_and_show(self):
         for i in range(len(self.arrayHide[0])):
@@ -117,15 +131,20 @@ class Vue():
                     if self.arrayHide[y][i] == 'B':
                         for g in range(len(self.demineur.array[0])):
                             for w in range(len(self.demineur.array)):
-                                if self.demineur.array[w][g] == 'b':
+                                if self.arrayHide[w][g] == 'F' and self.demineur.array[w][g] != 'b':
+                                    self.window.blit(
+                                        self.sprite.getbloc_mine_wrong(), (g*16+self.bordure, w*16+self.hauteur))
+                                elif self.arrayHide[w][g] == 'F' and self.demineur.array[w][g] == 'b':
+                                    self.window.blit(
+                                        self.sprite.getbloc_flag(), (g*16+self.bordure, w*16+self.hauteur))
+                                elif self.arrayHide[w][g] != 'F' and self.demineur.array[w][g] == 'b':
                                     self.window.blit(
                                         self.sprite.getbloc_mine(), (g*16+self.bordure, w*16+self.hauteur))
                         self.window.blit(
                             self.sprite.getbloc_mine_explode(), (i*16+self.bordure, y*16+self.hauteur))
-                        self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
-                                                                        self.smiley/2, self.hauteur/2 - self.smiley/2))
+                        self.window.blit(self.sprite.getsmiley_lose(), ((
+                            self.screen_width/2) - self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2+self.menuHeight))
                         self.lose = True
-                        #self.t.stop = True
                         self.t.pause()
                     # affiche les autres numéro qui sont pas une bombes
                     else:
@@ -140,11 +159,11 @@ class Vue():
                                  (16*i+self.bordure, 16*y+self.hauteur))
 
         self.window.blit(self.sprite.getsmiley_happy(), ((self.screen_width/2) -
-                                                         self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                         self.smiley/2, (self.hauteur-self.menuHeight)/2 + self.menuHeight - self.smiley/2))
 
         for i in range(3):
             self.window.blit(self.sprite.getdigit_0(),
-                             (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
+                             (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, (self.hauteur-self.menuHeight)/2 - self.digit_y/2 + self.menuHeight))
 
         # Calcul le nombre de bombes restantes
         self.nb_bombes = list(str(self.nb_mines))
@@ -153,7 +172,7 @@ class Vue():
         # Affiche le nombre de bombes restantes
         for i in range(len(self.nb_bombes)):
             self.window.blit(
-                self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
+                self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, (self.hauteur - self.menuHeight)/2 - self.digit_y/2 + self.menuHeight))
 
         while self.run:
             # event during game
@@ -167,7 +186,7 @@ class Vue():
                     lst.insert(0, i)
                 for i in range(len(lst)):
                     self.window.blit(self.sprite.printNumber(i, lst),
-                                     (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
+                                     (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, (self.hauteur-self.menuHeight)/2 - self.digit_y/2+self.menuHeight))
 
             for event in pygame.event.get():
                 # timer tout les secondes
@@ -184,26 +203,46 @@ class Vue():
                     x -= self.bordure
                     # affiche le shock si on est dans le jeux
                     if self.lose == False and self.win == False:
-                        if y >= 0:
+                        if y >= 0 and x >= 0 and x < self.screen_width - self.bordure*2 and y < self.screen_height - self.bordure - self.hauteur:
                             self.window.blit(self.sprite.getsmiley_shock(), ((self.screen_width/2) -
-                                                                             self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                                             self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2 + self.menuHeight))
                         # si on est dans le menu affiche le btnclick si on click dessus
-                        elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < (self.hauteur/2) + self.smiley/2 and y + self.hauteur > (self.hauteur/2) - self.smiley/2:
+                        elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < ((self.hauteur-self.menuHeight)/2) + self.smiley/2+self.menuHeight and y + self.hauteur > ((self.hauteur-self.menuHeight)/2) - self.smiley/2+self.menuHeight:
                             self.window.blit(self.sprite.getsmiley_happy_click(), ((self.screen_width/2) -
-                                                                                   self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                                                   self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2+self.menuHeight))
                     elif self.win == False:
                         self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
-                                                                        self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                                        self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2 + self.menuHeight))
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == self.left:
                     # Set the x, y postions of the mouse click
                     x, y = event.pos
+
+                    # si on est dans le menu
+                    if x > 0 and x < self.my_font.size("Niveau")[0] + 10 and y > 0 and y < self.menuHeight:
+                        self.niveau = ((self.niveau) + 1) % 3
+                        if self.niveau == 0:
+                            self.longueur = 8
+                            self.largeur = 7
+                            self.nb_mines = 10
+                        elif self.niveau == 1:
+                            self.longueur = 16
+                            self.largeur = 16
+                            self.nb_mines = 40
+                        elif self.niveau == 2:
+                            self.longueur = 16
+                            self.largeur = 31
+                            self.nb_mines = 99
+                        self.screen_width = self.largeur*16 + 2*self.bordure
+                        self.screen_height = self.longueur * 16 + self.hauteur + self.bordure
+                        self.initStart()
+
                     y -= self.hauteur
                     x -= self.bordure
                     pos_x, pos_y = int(x / 16), int(y / 16)
 
                     # si on est dans le jeu
-                    if y >= 0:
+                    if y >= 0 and x >= 0 and x < self.screen_width - self.bordure*2 and y < self.screen_height - self.bordure - self.hauteur:
 
                         while self.genere:
                             self.t.resume()
@@ -221,11 +260,11 @@ class Vue():
                             self.t.pause()
                             # self.t.join()
                             self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
-                                                                           self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                                           self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2 + self.menuHeight))
 
                         self.lose_and_show()
 
-                    elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < (self.hauteur/2) + self.smiley/2 and y + self.hauteur > (self.hauteur/2) - self.smiley/2:
+                    elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < ((self.hauteur - self.menuHeight)/2 + self.smiley/2 + self.menuHeight) and y + self.hauteur > ((self.hauteur-self.menuHeight)/2 - self.smiley/2+self.menuHeight):
                         self.genere = True
                         self.t.pause()
                         self.lose = False
@@ -242,12 +281,12 @@ class Vue():
                         # Affiche le nombre de bombes restantes
                         for i in range(len(self.nb_bombes)):
                             self.window.blit(
-                                self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
+                                self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, (self.hauteur-self.menuHeight)/2 - self.digit_y/2+self.menuHeight))
 
                     # Réaffiche le bon self.smiley
                     if self.lose == False and self.win == False:
                         self.window.blit(self.sprite.getsmiley_happy(), ((self.screen_width/2) -
-                                                                         self.smiley/2, self.hauteur/2 - self.smiley/2))
+                                                                         self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2+self.menuHeight))
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == self.right and self.lose == False and self.win == False:
                     # Set the x, y postions of the mouse click
@@ -255,7 +294,7 @@ class Vue():
                     y -= self.hauteur
                     x -= self.bordure
                     pos_x, pos_y = int(x / 16), int(y / 16)
-                    if not self.genere and y >= 0:
+                    if not self.genere and y >= 0 and x >= 0 and x < self.screen_width - self.bordure*2 and y < self.screen_height - self.bordure - self.hauteur:
                         self.arrayHide = self.demineur.setFlagorInt(
                             pos_x, pos_y, self.nb_mines)
 
@@ -279,7 +318,7 @@ class Vue():
                  # Affiche le nombre de bombes restantes
                     for i in range(len(self.nb_bombes)):
                         self.window.blit(
-                            self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
+                            self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, (self.hauteur-self.menuHeight)/2 - self.digit_y/2+self.menuHeight))
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle:
                     self.fillBlocFull()
@@ -301,11 +340,11 @@ class Vue():
                     click = pygame.mouse.get_pressed()
                     if click[1] == True:
                         cur = pygame.mouse.get_pos()
-                        if cur[1]-self.hauteur >= 0:
-                            y = cur[1]-self.hauteur
-                            x = cur[0]-self.bordure
+                        y = cur[1]-self.hauteur
+                        x = cur[0]-self.bordure
+                        if y >= 0 and x >= 0 and x < self.screen_width - self.bordure*2 and y < self.screen_height - self.bordure - self.hauteur:
                             dispfull = self.utils.tryMiddleClick(
-                                self.arrayHide, int(x / 16), int((y / 16)), self.longueur, self.largeur)
+                                self.arrayHide, int(x / 16), int((y / 16)), self.largeur, self.longueur)
                             self.fillBlocFull()
                             for i in range(len(dispfull)):
                                 self.window.blit(
@@ -313,15 +352,50 @@ class Vue():
 
                     if click[0] == True:
                         cur = pygame.mouse.get_pos()
-                        if cur[1]-self.hauteur >= 0:
-                            y = cur[1]-self.hauteur
-                            x = cur[0]-self.bordure
+                        y = cur[1]-self.hauteur
+                        x = cur[0]-self.bordure
+                        if y >= 0 and x >= 0 and x < self.screen_width - self.bordure*2 and y < self.screen_height - self.bordure - self.hauteur:
                             if self.arrayHide[int(y / 16)][int((x / 16))] == '*':
                                 self.fillBlocFull()
                                 self.window.blit(
                                     self.sprite.getbloc_empty(), (int(x / 16)*16+self.bordure, math.floor(y/16)*16+self.hauteur))
                             else:
                                 self.fillBlocFull()
+
+                # click gauche menu
+                click = pygame.mouse.get_pressed()
+                cur = pygame.mouse.get_pos()
+                # si on est dans le menu
+                if cur[0] > 0 and cur[0] < self.my_font.size("Niveau")[0] + 10 and cur[1] > 0 and cur[1] < self.menuHeight:
+                    pygame.draw.rect(self.window, self.colorWhite,
+                                     pygame.Rect(0, 0, self.my_font.size("Niveau")[0]+10, 1))
+                    pygame.draw.rect(self.window, self.colorGrey,
+                                     pygame.Rect(0, self.menuHeight-1, self.my_font.size("Niveau")[0]+10, 1))
+                    pygame.draw.rect(self.window, self.colorWhite,
+                                     pygame.Rect(0, 0, 1, self.menuHeight))
+                    pygame.draw.rect(self.window, self.colorGrey,
+                                     pygame.Rect(self.my_font.size("Niveau")[0]+10, 0, 1, self.menuHeight))
+                else:
+                    pygame.draw.rect(self.window, self.background,
+                                     pygame.Rect(0, 0, self.my_font.size("Niveau")[0]+10, 1))
+                    pygame.draw.rect(self.window, self.background,
+                                     pygame.Rect(0, self.menuHeight-1, self.my_font.size("Niveau")[0]+10, 1))
+                    pygame.draw.rect(self.window, self.background,
+                                     pygame.Rect(0, 0, 1, self.menuHeight))
+                    pygame.draw.rect(self.window, self.background,
+                                     pygame.Rect(self.my_font.size("Niveau")[0]+10, 0, 1, self.menuHeight))
+                if click[0] == True:
+                    cur = pygame.mouse.get_pos()
+                    # si on est dans le menu
+                    if cur[0] > 0 and cur[0] < self.my_font.size("Niveau")[0] + 10 and cur[1] > 0 and cur[1] < self.menuHeight:
+                        pygame.draw.rect(self.window, self.colorGrey,
+                                         pygame.Rect(0, 0, self.my_font.size("Niveau")[0]+10, 1))
+                        pygame.draw.rect(self.window, self.colorWhite,
+                                         pygame.Rect(0, self.menuHeight-1, self.my_font.size("Niveau")[0]+10, 1))
+                        pygame.draw.rect(self.window, self.colorGrey,
+                                         pygame.Rect(0, 0, 1, self.menuHeight))
+                        pygame.draw.rect(self.window, self.colorWhite,
+                                         pygame.Rect(self.my_font.size("Niveau")[0]+10, 0, 1, self.menuHeight))
 
             pygame.display.update()
         return

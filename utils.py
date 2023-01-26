@@ -154,4 +154,5 @@ class Utils:
             if i < row-1 and j > 0:
                 if (grid[(j-1)][(i+1)] == '*'):
                     arthur.append([(i+1), (j-1)])
+
         return arthur
