@@ -60,6 +60,8 @@ class Vue():
         self.window.fill(self.background)
         self.sprite = Sprites()
         self.affiche_bordure()
+        self.t.start()
+        self.t.pause()
         self.grille()
 
     def affiche_bordure(self):
@@ -127,11 +129,20 @@ class Vue():
 
             # event during game
             for event in pygame.event.get():
-
+                # timer tout les secondes
+                if not self.genere and self.lose == False and self.win == False and self.t.cpt != self.seconds:
+                    print(self.t.cpt)
+                    self.seconds = self.t.cpt
+                    nb_sec = list(str(self.seconds))
+                    for i in range(3-len(nb_sec)):
+                        nb_sec.insert(0, '0')
+                    for i in range(len(nb_sec)):
+                        self.window.blit(self.sprite.printNumber(i, nb_sec),
+                                         (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
                 if event.type == pygame.QUIT:
                     self.run = False
-                    self.t.stop = True
-                    self.t.join()
+                    self.t.stop()
+                    # self.t.join()
                     pygame.quit()
                     exit()
 
@@ -163,10 +174,11 @@ class Vue():
                     if y >= 0:
 
                         while self.genere:
+                            self.t.resume()
                             self.demineur = Generation(
                                 self.longueur, self.largeur, self.nb_mines, pos_x, pos_y)
                             self.genere = False
-                            self.t.start()
+                            # self.t.start()
                         if self.lose == False and self.win == False:
                             arrayHide = self.demineur.deleteCase(
                                 pos_x, pos_y)
@@ -174,8 +186,8 @@ class Vue():
                         # Victoire
                         if self.demineur.getWin() == self.nb_mines:
                             self.win = True
-                            self.t.stop = True
-                            self.t.join()
+                            self.t.pause()
+                            # self.t.join()
                             self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
                                                                            self.smiley/2, self.hauteur/2 - self.smiley/2))
 
@@ -194,14 +206,15 @@ class Vue():
                                         self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
                                                                                         self.smiley/2, self.hauteur/2 - self.smiley/2))
                                         self.lose = True
-                                        self.t.stop = True
-                                        self.t.join()
+                                        #self.t.stop = True
+                                        self.t.pause()
                                     # affiche les autres numéro qui sont pas une bombes
                                     else:
                                         self.window.blit(
                                             eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+self.bordure, y*16+self.hauteur))
                     elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < (self.hauteur/2) + self.smiley/2 and y + self.hauteur > (self.hauteur/2) - self.smiley/2:
                         self.genere = True
+                        self.t.pause()
                         self.lose = False
                         self.win = False
                         # Affiche un tableau de bloc plein
@@ -294,15 +307,35 @@ class appThread(th.Thread):
             self.cnt = self.thread(self.cnt)
 
 
-def __app__(cnt):
-    cnt += 1
-    time.sleep(1)
-    return cnt
+class Job(th.Thread):
+
+    def __init__(self, *args, **kwargs):
+        super(Job, self).__init__(*args, **kwargs)
+        self.__flag = th.Event()  # The flag used to pause the thread
+        self.__flag.set()  # Set to True
+        self.__running = th.Event()  # Used to stop the thread identification
+        self.__running.set()  # Set running to True
+        self.cpt = 0
+
+    def run(self):
+        while self.__running.isSet():
+            # return immediately when it is True, block until the internal flag is True when it is False
+            self.__flag.wait()
+            self.cpt += 1
+            # print(self.cpt)
+            time.sleep(1)
+
+    def pause(self):
+        self.__flag.clear()  # Set to False to block the thread
+        self.cpt = 0
+
+    def resume(self):
+        self.__flag.set()  # Set to True, let the thread stop blocking
+
+    def stop(self):
+        self.__flag.set()  # Resume the thread from the suspended state, if it is already suspended
+        self.__running.clear()  # Set to False
 
 
-if __name__ == "__main__":
-    t = appThread(thread=__app__)
-    print(t)
-    """ le thread tourne """
-    cProfile.run(
-        Vue(t))
+t = Job()
+Vue(t)
