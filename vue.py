@@ -31,6 +31,7 @@ class Vue():
         self.colorGrey = (128, 128, 128)
 
         self.left = 1
+        self.middle = 2
         self.right = 3
 
         self.digit_x = 13
@@ -101,6 +102,29 @@ class Vue():
 
         pygame.draw.rect(self.window, self.colorGrey,
                          pygame.Rect(10, 10,  2, self.hauteur - 2*self.bordure + 2))
+
+    def lose_and_show(self):
+        for i in range(len(self.arrayHide[0])):
+            for y in range(len(self.arrayHide)):
+                if self.arrayHide[y][i] != '*':
+                    # Si on perd
+                    if self.arrayHide[y][i] == 'B':
+                        for g in range(len(self.demineur.array[0])):
+                            for w in range(len(self.demineur.array)):
+                                if self.demineur.array[w][g] == 'b':
+                                    self.window.blit(
+                                        self.sprite.getbloc_mine(), (g*16+self.bordure, w*16+self.hauteur))
+                        self.window.blit(
+                            self.sprite.getbloc_mine_explode(), (i*16+self.bordure, y*16+self.hauteur))
+                        self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
+                                                                        self.smiley/2, self.hauteur/2 - self.smiley/2))
+                        self.lose = True
+                        #self.t.stop = True
+                        self.t.pause()
+                    # affiche les autres numéro qui sont pas une bombes
+                    else:
+                        self.window.blit(
+                            eval(self.sprite.returnSprite(self.arrayHide[y][i])), (i*16+self.bordure, y*16+self.hauteur))
 
     def grille(self):
         # On affiche le tableau
@@ -182,7 +206,7 @@ class Vue():
                             self.genere = False
                             # self.t.start()
                         if self.lose == False and self.win == False:
-                            arrayHide = self.demineur.deleteCase(
+                            self.arrayHide = self.demineur.deleteCase(
                                 pos_x, pos_y)
 
                         # Victoire
@@ -193,27 +217,8 @@ class Vue():
                             self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
                                                                            self.smiley/2, self.hauteur/2 - self.smiley/2))
 
-                        for i in range(len(arrayHide[0])):
-                            for y in range(len(arrayHide)):
-                                if arrayHide[y][i] != '*':
-                                    # Si on perd
-                                    if arrayHide[y][i] == 'B':
-                                        for g in range(len(self.demineur.array[0])):
-                                            for w in range(len(self.demineur.array)):
-                                                if self.demineur.array[w][g] == 'b':
-                                                    self.window.blit(
-                                                        self.sprite.getbloc_mine(), (g*16+self.bordure, w*16+self.hauteur))
-                                        self.window.blit(
-                                            self.sprite.getbloc_mine_explode(), (i*16+self.bordure, y*16+self.hauteur))
-                                        self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
-                                                                                        self.smiley/2, self.hauteur/2 - self.smiley/2))
-                                        self.lose = True
-                                        #self.t.stop = True
-                                        self.t.pause()
-                                    # affiche les autres numéro qui sont pas une bombes
-                                    else:
-                                        self.window.blit(
-                                            eval(self.sprite.returnSprite(arrayHide[y][i])), (i*16+self.bordure, y*16+self.hauteur))
+                        self.lose_and_show()
+
                     elif x + self.bordure < (self.screen_width/2) + self.smiley/2 and x + self.bordure > (self.screen_width/2) - self.smiley/2 and y + self.hauteur < (self.hauteur/2) + self.smiley/2 and y + self.hauteur > (self.hauteur/2) - self.smiley/2:
                         self.genere = True
                         self.t.pause()
@@ -245,17 +250,18 @@ class Vue():
                     x -= self.bordure
                     pos_x, pos_y = int(x / 16), int(y / 16)
                     if not self.genere and y >= 0:
-                        arrayHide = self.demineur.setFlagorInt(
+                        self.arrayHide = self.demineur.setFlagorInt(
                             pos_x, pos_y, self.nb_mines)
-                        for i in range(len(arrayHide[0])):
-                            for y in range(len(arrayHide)):
-                                if arrayHide[y][i] == 'F':
+
+                        for i in range(len(self.arrayHide[0])):
+                            for y in range(len(self.arrayHide)):
+                                if self.arrayHide[y][i] == 'F':
                                     self.window.blit(
                                         self.sprite.getbloc_flag(), (int(i*16)+self.bordure, int(y*16)+self.hauteur))
-                                if arrayHide[y][i] == 'I':
+                                if self.arrayHide[y][i] == 'I':
                                     self.window.blit(
                                         self.sprite.getbloc_interrogation(), (int(i*16)+self.bordure, int(y*16)+self.hauteur))
-                                if arrayHide[y][i] == '*':
+                                if self.arrayHide[y][i] == '*':
                                     self.window.blit(
                                         self.sprite.getbloc_full(), (int(i*16)+self.bordure, int(y*16)+self.hauteur))
 
@@ -268,6 +274,18 @@ class Vue():
                     for i in range(len(self.nb_bombes)):
                         self.window.blit(
                             self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
+
+                # click middle
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == self.middle and self.lose == False and self.win == False:
+                    x, y = event.pos
+                    y -= self.hauteur
+                    x -= self.bordure
+                    pos_x, pos_y = int(x / 16), int(y / 16)
+                    arthur = self.demineur.clickmiddle(pos_x, pos_y)
+                    for i in range(len(arthur)):
+                        self.demineur.deleteCase(arthur[i][0], arthur[i][1])
+
+                    self.lose_and_show()
 
                 # Pour actualiser le click long
                 if not self.genere and self.lose == False and self.win == False:

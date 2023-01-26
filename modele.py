@@ -72,7 +72,7 @@ class Generation:
                     self.arrayHide[(j-1)][(i+1)] = (self.array[(j-1)][(i+1)])
         if self.arrayHide[y][x] != 'F':
             if (self.array[y][x] == 'b'):
-                print("Perdu")
+                # print("Perdu")
                 self.arrayHide[y][x] = 'B'
             elif (self.array[y][x] == '0'):
                 getZeroTab = [[x, y]]
@@ -110,6 +110,8 @@ class Generation:
     def getWin(self):
         a = (self.arrayHide == '*').sum() + (self.arrayHide ==
                                              'F').sum() + (self.arrayHide == 'I').sum()
-        if a == 8:
-            print(a)
         return a
+
+    def clickmiddle(self, x, y):
+        return self.utils.get_nb_flag(
+            self.array, self.arrayHide, x, y, self.row, self.column)
