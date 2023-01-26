@@ -1,3 +1,4 @@
+from functools import wraps
 import time
 from time import sleep
 from typing import Callable
@@ -7,6 +8,7 @@ from sprites import Sprites
 from modele import Generation
 import math
 import threading as th
+import cProfile
 
 
 class Vue():
@@ -122,18 +124,10 @@ class Vue():
                 self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
 
         while self.run:
+
             # event during game
             for event in pygame.event.get():
-                # timer tout les secondes
-                if not self.genere and self.lose == False and self.win == False and self.t.cnt != self.seconds:
-                    print(self.t.cnt)
-                    self.seconds = self.t.cnt
-                    nb_sec = list(str(self.seconds))
-                    for i in range(3-len(nb_sec)):
-                        nb_sec.insert(0, '0')
-                    for i in range(len(nb_sec)):
-                        self.window.blit(self.sprite.printNumber(i, nb_sec),
-                                         (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
+
                 if event.type == pygame.QUIT:
                     self.run = False
                     self.t.stop = True
@@ -284,6 +278,7 @@ class Vue():
                                         if dem[j][i] == '*':
                                             self.window.blit(
                                                 self.sprite.getbloc_full(), (i*16+self.bordure, j*16+self.hauteur))
+
             pygame.display.update()
         return
 
@@ -309,4 +304,5 @@ if __name__ == "__main__":
     t = appThread(thread=__app__)
     print(t)
     """ le thread tourne """
-    Vue(t)
+    cProfile.run(
+        Vue(t))
