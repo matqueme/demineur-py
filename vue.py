@@ -125,17 +125,18 @@ class Vue():
 
         while self.run:
             # event during game
+            if not self.genere and self.lose == False and self.win == False and self.t.cpt != self.seconds:
+                print(self.t.cpt)
+                self.seconds = self.t.cpt
+                nb_sec = list(str(self.seconds))
+                for i in range(3-len(nb_sec)):
+                    nb_sec.insert(0, '0')
+                for i in range(len(nb_sec)):
+                    self.window.blit(self.sprite.printNumber(i, nb_sec),
+                                     (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
+
             for event in pygame.event.get():
                 # timer tout les secondes
-                if not self.genere and self.lose == False and self.win == False and self.t.cpt != self.seconds:
-                    print(self.t.cpt)
-                    self.seconds = self.t.cpt
-                    nb_sec = list(str(self.seconds))
-                    for i in range(3-len(nb_sec)):
-                        nb_sec.insert(0, '0')
-                    for i in range(len(nb_sec)):
-                        self.window.blit(self.sprite.printNumber(i, nb_sec),
-                                         (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
                 if event.type == pygame.QUIT:
                     self.run = False
                     self.t.stop()
