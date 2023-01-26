@@ -73,7 +73,7 @@ class Generation:
                     self.arrayHide[(j-1)][(i+1)] = (self.array[(j-1)][(i+1)])
         if self.arrayHide[y][x] != 'F':
             if (self.array[y][x] == 'b'):
-                print("perdu")
+                print("Perdu")
                 self.arrayHide[y][x] = 'B'
             elif (self.array[y][x] == '0'):
                 getZeroTab = [[x, y]]

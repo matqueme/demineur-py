@@ -35,7 +35,6 @@ class Vue():
 
         self.smiley = 25
 
-        self.start_ticks = 0
         self.seconds = 0
         self.demineur = 0
         self.nb_bombes = 0
@@ -46,6 +45,7 @@ class Vue():
 
         self.genere = True
         self.run = True
+        self.t = t
 
         pygame.init()
         self.window = pygame.display.set_mode(
@@ -58,7 +58,6 @@ class Vue():
         self.sprite = Sprites()
         self.affiche_bordure()
         self.grille()
-        self.t = t
 
     def affiche_bordure(self):
         pygame.draw.rect(self.window, self.colorWhite,
@@ -126,9 +125,7 @@ class Vue():
             for event in pygame.event.get():
                 # timer tout les secondes
                 if not self.genere and self.lose == False and self.win == False:
-                    self.seconds = (pygame.time.get_ticks() -
-                                    self.start_ticks)/1000
-                    nb_sec = list(str(math.floor(self.seconds)))
+                    nb_sec = list(str(self.seconds))
                     for i in range(3-len(nb_sec)):
                         nb_sec.insert(0, '0')
                     for i in range(len(nb_sec)):
@@ -136,8 +133,8 @@ class Vue():
                                          (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
                 if event.type == pygame.QUIT:
                     self.run = False
-                    t.stop = True
-                    t.join()
+                    self.t.stop = True
+                    self.t.join()
                     pygame.quit()
                     exit()
 
@@ -172,7 +169,7 @@ class Vue():
                             self.demineur = Generation(
                                 self.longueur, self.largeur, self.nb_mines, pos_x, pos_y)
                             self.genere = False
-                            self.start_ticks = pygame.time.get_ticks()
+                            self.t.start()
                         if self.lose == False and self.win == False:
                             arrayHide = self.demineur.deleteCase(
                                 pos_x, pos_y)
@@ -180,6 +177,8 @@ class Vue():
                         # Victoire
                         if self.demineur.getWin() == self.nb_mines:
                             self.win = True
+                            self.t.stop = True
+                            self.t.join()
                             self.window.blit(self.sprite.getsmiley_self.win(), ((self.screen_width/2) -
                                                                                 self.smiley/2, self.hauteur/2 - self.smiley/2))
 
@@ -198,6 +197,8 @@ class Vue():
                                         self.window.blit(self.sprite.getsmiley_lose(), ((self.screen_width/2) -
                                                                                         self.smiley/2, self.hauteur/2 - self.smiley/2))
                                         self.lose = True
+                                        self.t.stop = True
+                                        self.t.join()
                                     # affiche les autres numéro qui sont pas une bombes
                                     else:
                                         self.window.blit(
@@ -298,16 +299,13 @@ class appThread(th.Thread):
 
 
 def __app__():
-    """ ton code à faire tourner -> sans while ! """
+    """ code à faire tourner -> sans while ! """
     sleep(1)
     print("hello")
 
 
 if __name__ == "__main__":
-    t = appThread(thread=__app__).start()
+    t = appThread(thread=__app__)
+    print(t)
     """ le thread tourne """
     Vue(t)
-    """ quand tu veux le stopper """
-    print("fin vue")
-    t.stop = True  # la variable stop passe à True donc return le While de appThread()
-    t.join()  # supprime l'instance de la mémoire
