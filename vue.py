@@ -129,13 +129,15 @@ class Vue():
 
             # event during game
             if not self.genere and self.lose == False and self.win == False and self.t.cpt != self.seconds:
-                print(self.t.cpt)
                 self.seconds = self.t.cpt
                 nb_sec = list(str(self.seconds))
+                lst = []
                 for i in range(3-len(nb_sec)):
                     nb_sec.insert(0, '0')
-                for i in range(len(nb_sec)):
-                    self.window.blit(self.sprite.printNumber(i, nb_sec),
+                for i in nb_sec:
+                    lst.insert(0, i)
+                for i in range(len(lst)):
+                    self.window.blit(self.sprite.printNumber(i, lst),
                                      (self.screen_width - (i * self.digit_x) - self.digit_x - self.bordure, self.hauteur/2 - self.digit_y/2))
 
             for event in pygame.event.get():
@@ -319,12 +321,12 @@ class Job(th.Thread):
         self.cpt = 0
 
     def run(self):
-        while self.__running.isSet():
+        while self.__running.is_set():
             # return immediately when it is True, block until the internal flag is True when it is False
             self.__flag.wait()
-            self.cpt += 1
-            # print(self.cpt)
-            time.sleep(1)
+            if (self.cpt < 999):
+                self.cpt += 1
+                time.sleep(1)
 
     def pause(self):
         self.__flag.clear()  # Set to False to block the thread
