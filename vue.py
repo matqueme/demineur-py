@@ -126,7 +126,6 @@ class Vue():
                 self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, self.hauteur/2 - self.digit_y/2))
 
         while self.run:
-
             # event during game
             if not self.genere and self.lose == False and self.win == False and self.t.cpt != self.seconds:
                 self.seconds = self.t.cpt
