@@ -320,7 +320,7 @@ class Vue():
                         self.window.blit(
                             self.sprite.printNumber(i, self.nb_bombes), (i*self.digit_x + self.bordure, (self.hauteur-self.menuHeight)/2 - self.digit_y/2+self.menuHeight))
 
-                elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle:
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle and self.lose == False and self.win == False:
                     self.fillBlocFull()
 
                 # click middle
