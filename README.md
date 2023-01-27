@@ -7,7 +7,7 @@ Reprise de l'incontournable jeu de Windows 98, le Démineur
 - Python 3.10
 - Pygame
 
-## Usage
+## Fonctionnalité
 
 - Possibilité de jouer plusieurs niveaux
 - Possibilité d'utiliser le click mollet sur les chiffres
