@@ -1,3 +1,16 @@
-"# demineur-py"
-Le but du jeu est de découvrir toutes les cases libres sans faire exploser les mines, c'est-à-dire sans cliquer sur les cases qui les dissimulent. Lorsque le joueur clique sur une case libre comportant au moins une mine dans l'une de ses cases avoisinantes, un chiffre apparaît, indiquant ce nombre de mines.
-Le chiffre correspond au nombre de bombe avoisinant la case.
+# Démineur
+
+Reprise de l'incontournable jeu de Windows 98, le Démineur
+
+## Installation
+
+- Python 3.10
+- Pygame
+
+## Usage
+
+- Possibilité de jouer plusieurs niveaux
+- Possibilité d'utiliser le click mollet sur les chiffres
+- Possibilité de restart le jeu avec un bouton (le smiley)
+- Possibilité de voir son temps de jeux
+- Possibilité de voir le nombre de bombes
