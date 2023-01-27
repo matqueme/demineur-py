@@ -151,6 +151,14 @@ class Vue():
                         self.window.blit(
                             eval(self.sprite.returnSprite(self.arrayHide[y][i])), (i*16+self.bordure, y*16+self.hauteur))
 
+    def victoire(self):
+        # Victoire
+        if self.demineur.getWin() == self.nb_mines:
+            self.win = True
+            self.t.pause()
+            self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
+                                                           self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2 + self.menuHeight))
+
     def grille(self):
         # On affiche le tableau
         for i in range(self.largeur):
@@ -254,13 +262,7 @@ class Vue():
                             self.arrayHide = self.demineur.deleteCase(
                                 pos_x, pos_y)
 
-                        # Victoire
-                        if self.demineur.getWin() == self.nb_mines:
-                            self.win = True
-                            self.t.pause()
-                            # self.t.join()
-                            self.window.blit(self.sprite.getsmiley_win(), ((self.screen_width/2) -
-                                                                           self.smiley/2, (self.hauteur-self.menuHeight)/2 - self.smiley/2 + self.menuHeight))
+                        self.victoire()
 
                         self.lose_and_show()
 
@@ -322,6 +324,7 @@ class Vue():
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == self.middle and self.lose == False and self.win == False:
                     self.fillBlocFull()
+                    self.victoire()
 
                 # click middle
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == self.middle and self.lose == False and self.win == False:
