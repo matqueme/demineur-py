@@ -201,7 +201,6 @@ class Vue():
                 if event.type == pygame.QUIT:
                     self.run = False
                     self.t.stop()
-                    # self.t.join()
                     pygame.quit()
                     exit()
 
@@ -388,6 +387,8 @@ class Vue():
                     pygame.draw.rect(self.window, self.background,
                                      pygame.Rect(self.my_font.size("Niveau")[0]+10, 0, 1, self.menuHeight))
                 if click[0] == True:
+                    self.t.pause()
+                    self.t.resume()
                     cur = pygame.mouse.get_pos()
                     # si on est dans le menu
                     if cur[0] > 0 and cur[0] < self.my_font.size("Niveau")[0] + 10 and cur[1] > 0 and cur[1] < self.menuHeight:
